@@ -1,0 +1,57 @@
+﻿<Page
+    x:Class="AppXamlDX12.DirectXPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AppXamlDX12"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <SwapChainPanel x:Name="swapChainPanel" Margin="269,0,0,0">
+        <StackPanel HorizontalAlignment="Left" Height="900" Margin="-268,0,0,0" VerticalAlignment="Top" Width="266" Background="#FF3BEA1F">
+            <TextBlock x:Name="IDC_POINT_COLOR_STATIC" HorizontalAlignment="Center" Margin="10,10,0,0" TextWrapping="Wrap" Text="Point Color" VerticalAlignment="Top" RenderTransformOrigin="0.667,-11.258" TextDecorations="Underline"/>
+            <StackPanel HorizontalAlignment="Left" Height="383" Margin="0,10,0,0" VerticalAlignment="Top" Width="133" RequestedTheme="Default" Background="#FFE593F1">
+                <TextBox x:Name="IDC_CLIP_STATIC2" Text="" HorizontalAlignment="Center" Margin="0,10,0,0" Height="52" Width="110" FocusVisualPrimaryBrush="#FF1212E2" Foreground="#FF1212E2" SelectionHighlightColor="#FF1212E2" RenderTransformOrigin="5.459,0.029" RequestedTheme="Default" Background="#FF1212E2"/>
+                <Button x:Name="IDC_CLEAR_BUTTON" Content="New or Clear" HorizontalAlignment="Center" Margin="0,20,0,0" VerticalAlignment="Top" Width="110" Click="IDC_CLEAR_BUTTON_Click" Background="#332BD8E0" BorderBrush="#FFFF6E00"/>
+                <Button x:Name="IDC_SAVE_BUTTON" Content="Save" HorizontalAlignment="Center" Margin="0,20,0,0" VerticalAlignment="Top" Width="110" Background="#3344B6BB" BorderBrush="#FFFF6E00"/>
+                <Button x:Name="IDC_ROTO_HELP_BUTTON" Content="Help" HorizontalAlignment="Center" Margin="0,20,0,0" VerticalAlignment="Top" Width="110" Background="#33D9EE0C" BorderBrush="#FFFF6E00"/>
+                <TextBlock x:Name="IDC_Advanced_STATIC" HorizontalAlignment="Center" Margin="0,10,0,0" TextWrapping="Wrap" Text="Advanced" VerticalAlignment="Top" RenderTransformOrigin="0.667,-11.258" TextDecorations="Underline"/>
+                <CheckBox x:Name="IDC_TOP_OR_LEFT_CHECKBOX" Content="Top or Left" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Checked="IDC_TOP_OR_LEFT_CHECKBOX_Checked" Background="#FFF36A0B" FocusVisualPrimaryBrush="#FFF36A0B"/>
+                <CheckBox x:Name="IDC_BOTTOM_OR_RIGHT_CHECKBOX" Content="Bottom or Right" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Checked="IDC_BOTTOM_OR_RIGHT_CHECKBOX_Checked" Background="#FFF36A0B"/>
+                <TextBlock x:Name="IDC_ROTATION_STATIC" HorizontalAlignment="Center" Margin="0,10,0,0" Text="Rotation ->" VerticalAlignment="Top" Width="68" TextDecorations="Underline"/>
+
+            </StackPanel>
+            <StackPanel HorizontalAlignment="Right" Height="383" Margin="0,-383,0,0" VerticalAlignment="Top" Width="133" RequestedTheme="Light" Background="#FFCD33E4">
+                <Button x:Name="IDC_SET_COLORS_BUTTON" Content="1) Set Colors" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,10,0,0" RenderTransformOrigin="0.906,1.984" Height="52" Width="110" BorderBrush="#FFE4144D"/>
+                <TextBlock x:Name="IDC_FACES_STATIC"  Text="2) Faces" HorizontalAlignment="Center" VerticalAlignment="Top" Width="67" TextDecorations="Underline" FocusVisualPrimaryBrush="#FF159B15"/>
+                <CheckBox x:Name="IDC_EXTERIOR_FACES_CHECKBOX" Content="Exterior" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="1.91,0.484" Width="110" Margin="0,0,0,0" Background="#FF159B15"/>
+                <CheckBox x:Name="IDC_INTERIOR_FACES_CHECKBOX" Content="Interior" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="7,0,0,0" RenderTransformOrigin="1.91,0.484" Width="110" Background="#FF159B15"/>
+                <Button x:Name="IDC_SET_POINTS_BUTTON" Content="3) Set Points" HorizontalAlignment="Center" Height="30" Margin="0,10,0,0" VerticalAlignment="Top" Width="110" BorderBrush="#FFE4144D"/>
+                <Button x:Name="IDC_SIZE_OBJECT_BUTTON" Content="4) Size Object" HorizontalAlignment="Center" Height="30" Margin="0,10,0,0" VerticalAlignment="Top" Width="110" BorderBrush="#FFE4144D"/>
+                <CheckBox x:Name="IDC_FIRST_TO_LAST_CHECKBOX" Content="First to Last" HorizontalAlignment="Center" Margin="0,32,0,0" VerticalAlignment="Top" Checked="IDC_BOTTOM_OR_RIGHT_CHECKBOX_Checked" Background="#FFF36A0B"/>
+                <CheckBox x:Name="IDC_AXIS_CHECKBOX" Content="Y Axis Rotation" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Checked="IDC_AXIS_CHECKBOX_Checked" Background="#FFF36A0B"/>
+                <TextBox x:Name="IDC_ROTATION_EDIT" HorizontalAlignment="Center" Margin="0,10,0,0" Text="5" VerticalAlignment="Top" Width="112" TextChanged="IDC_ROTATION_EDIT_TextChanged" BorderBrush="#FFF36A0B" InputScope="Number"/>
+            </StackPanel>
+            <TextBlock x:Name="DC_POINT_SPACE_STATIC" HorizontalAlignment="Left" Margin="0,20,0,0" TextWrapping="Wrap" Text="Point Spacing 0.300000" VerticalAlignment="Top" Width="187" AutomationProperties.HelpText="Sets the Distance between points. The larger the spacing the less points in your line" AutomationProperties.Name="IDC_POINT_SPACE_STATIC"/>
+            <Slider x:Name="IDC_SLIDER" Background="#FFCD33E4" BorderBrush="#FFD41414" Foreground="#FF842D91" ValueChanged="IDC_SLIDER_ValueChanged"/>
+            <TextBlock x:Name="m_SphereRadius" HorizontalAlignment="Left" Margin="0,20,0,0" TextWrapping="Wrap" Text="Sphere Radius"/>
+            <TextBox x:Name="m_SphereRadiusTextBox" Text="81.000000" TextWrapping="Wrap" RenderTransformOrigin="0.455,-1.562" TextChanged="SphereRadiusTextBox_TextChanged"/>
+            <TextBlock x:Name="PointSpacing" HorizontalAlignment="Left" Margin="0,10,0,0" TextWrapping="Wrap" Text="Point Spacing"/>
+            <TextBox x:Name="m_PointSpaceTextBox" Text="10.000000" TextWrapping="Wrap" RenderTransformOrigin="0.455,-2.562" TextChanged="PointSpacingTextBox_TextChanged"/>
+            <Button x:Name="DrawSphereButton" Content="Draw Sphere" HorizontalAlignment="Left" Margin="0,20,0,0" RenderTransformOrigin="0.629,4.75" Click="DrawSphereButton_Click" AutomationProperties.HelpText="Press to Draw a new sphere"/>
+
+        </StackPanel>
+    </SwapChainPanel>
+
+    <Page.BottomAppBar>
+        <AppBar x:Name="bottomAppBar" Padding="10,0,10,0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <AppBarButton AutomationProperties.Name="Sample Button"
+                      AutomationProperties.AutomationId="SampleAppBarButton"
+                      Click="AppBarButton_Click"/>
+                <Button Name="IDC_NEW_BUTTON" Content="SPARE BUTTON" HorizontalAlignment="Center" Height="30" Margin="0,10,0,0" VerticalAlignment="Top" Width="110" BorderBrush="#FFE4144D"/>
+            </StackPanel>
+        </AppBar>
+    </Page.BottomAppBar>
+</Page>
