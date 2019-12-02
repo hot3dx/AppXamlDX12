@@ -1,7 +1,7 @@
 # AppXamlDX12
 DirectX12UAP Xaml DirectX 12 Visual Studio 2019, OS Build 1909, tools 142, Windows 10 - The Cube
 
-![AppXamlDX12 Preview](http://github.com/hot3dx/AppXamlDX12/Assets/AppXamlDX12.png)
+![](https://github.com/hot3dx/AppXamlDX12/blob/master/Assets/AppXamlDX12.png)
 
 DirectX12UAP c++ template by Hot3dx - Jeff Kubitz
 It is the DirectX 12 Xaml spinning cube
@@ -19,6 +19,9 @@ BTC 33DN8TgAe879tDkhsCEpneoVrydHbasuLm
 BCHABC qruhxl8y2753fg0qfx7t8zfqzw92rvaxussk7fcnke
 
 LTC MEQVCCxa5ZZkmGqAfYfRvipNcY4BaTRrFm
+
+By:
+![Ico](https://github.com/hot3dx/AppXamlDX12/blob/master/Assets/AutoDraw2.ico)
 
 
 © 2019 GitHub, Inc.
