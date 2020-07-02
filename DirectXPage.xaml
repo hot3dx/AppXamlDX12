@@ -9,6 +9,10 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <SwapChainPanel x:Name="swapChainPanel" Margin="269,0,0,0">
+        <TextBlock Text="Hello from XAML!"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Top"
+               FontSize="30" />
         <StackPanel HorizontalAlignment="Left" Height="900" Margin="-268,0,0,0" VerticalAlignment="Top" Width="266" Background="#FF3BEA1F">
             <TextBlock x:Name="IDC_POINT_COLOR_STATIC" HorizontalAlignment="Center" Margin="10,10,0,0" TextWrapping="Wrap" Text="Point Color" VerticalAlignment="Top" RenderTransformOrigin="0.667,-11.258" TextDecorations="Underline"/>
             <StackPanel HorizontalAlignment="Left" Height="383" Margin="0,10,0,0" VerticalAlignment="Top" Width="133" RequestedTheme="Default" Background="#FFE593F1">
@@ -50,7 +54,8 @@
                 <AppBarButton AutomationProperties.Name="Sample Button"
                       AutomationProperties.AutomationId="SampleAppBarButton"
                       Click="AppBarButton_Click"/>
-                <Button Name="IDC_NEW_BUTTON" Content="SPARE BUTTON" HorizontalAlignment="Center" Height="30" Margin="0,10,0,0" VerticalAlignment="Top" Width="110" BorderBrush="#FFE4144D"/>
+                <Button x:Name="IDC_NEW_BUTTON" Content="SPARE BUTTON" HorizontalAlignment="Center" Height="30" Margin="0,10,0,0" VerticalAlignment="Top" Width="110" BorderBrush="#FFE4144D" Click="IDC_NEW_BUTTON_Click"/>
+                <TextBox x:Name="IDC_WELCOME_STATIC" Text="10.000000" TextWrapping="Wrap" Height="30" Width="300" HorizontalAlignment="Center" Margin="0,10,0,0" TextChanged="IDC_WELCOME_STATIC_TextChanged"/>
             </StackPanel>
         </AppBar>
     </Page.BottomAppBar>

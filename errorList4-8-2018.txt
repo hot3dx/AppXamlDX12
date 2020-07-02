@@ -1,0 +1,26 @@
+
+222 SceneRenderer::CreateWindowSizeDependentResources()
+    m_lineEffect->SetProjection(projection);
+D3D12: Removing Device.
+Exception thrown at 0x00007FF885C8A859 in AppXamlDX12.exe: Microsoft C++ exception: _com_error at memory location 0x000000FE79CFE5D0.
+Device Lost on Present: Reason code 0x887A002B
+DXGI WARNING: Live IDXGIFactory at 0x00000285A42A3570, Refcount: 2 [ STATE_CREATION WARNING #0: ]
+Exception thrown at 0x00007FF885C8A859 in AppXamlDX12.exe: Microsoft C++ exception: _com_error at memory location 0x000000FE79CFCF70.
+Exception thrown at 0x00007FF885C8A859 in AppXamlDX12.exe: Microsoft C++ exception: _com_error at memory location 0x000000FE79CFD240.
+Exception thrown at 0x00007FF885C8A859 (KernelBase.dll) in AppXamlDX12.exe: WinRT originate error - 0x887A002B : 'The application is trying to use a resource to which it does not have the required access privileges.
+This is most commonly caused by writing to a shared resource with read-only access.'.
+Exception thrown at 0x00007FF885C8A859 in AppXamlDX12.exe: Microsoft C++ exception: Platform::COMException ^ at memory location 0x000000FE79CFDB98. HRESULT:0x887A002B The application is trying to use a resource to which it does not have the required access privileges.
+This is most commonly caused by writing to a shared resource with read-only access.
+WinRT information: The application is trying to use a resource to which it does not have the required access privileges.
+This is most commonly caused by writing to a shared resource with read-only access.
+Stack trace:
+ >[External Code]
+ >AppXamlDX12.exe!DX::ThrowIfFailed(HRESULT hr) Line 25
+ >AppXamlDX12.exe!DX::DeviceResources::CreateDeviceResources() Line 238
+ >AppXamlDX12.exe!DX::DeviceResources::HandleDeviceLost() Line 642
+ >AppXamlDX12.exe!DX::DeviceResources::Present(D3D12_RESOURCE_STATES beforeState) Line 830
+ >AppXamlDX12.exe!AppXamlDX12::SceneRenderer::Render() Line 544
+ >AppXamlDX12.exe!AppXamlDX12::AppXamlDX12Main::Render() Line 139
+ >AppXamlDX12.exe!AppXamlDX12::AppXamlDX12Main::Update() Line 110
+ >AppXamlDX12.exe!AppXamlDX12::AppXamlDX12Main::StartRenderLoop::__l2::<lambda>(Windows::Foundation::IAsyncAction ^ action) Line 80
+ >[External Code]

@@ -3,4 +3,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <DebuggerType>NativeOnly</DebuggerType>
   </PropertyGroup>
+  <PropertyGroup>
+    <AppIconSource>C:\Users\hot3dx-home\Source\AppXamlDX12\Assets\Square150x150Logo.scale-200.png</AppIconSource>
+    <SplashScreenSource>C:\Users\hot3dx-home\Source\AppXamlDX12\Assets\bitmap1.bmp</SplashScreenSource>
+  </PropertyGroup>
 </Project>

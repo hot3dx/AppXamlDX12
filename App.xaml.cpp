@@ -33,6 +33,16 @@ App::App()
 	InitializeComponent();
 	Suspending += ref new SuspendingEventHandler(this, &App::OnSuspending);
 	Resuming += ref new EventHandler<Object^>(this, &App::OnResuming);
+
+#if defined(_DEBUG)
+	UnhandledException += ref new UnhandledExceptionEventHandler([](Object^ /* sender */, UnhandledExceptionEventArgs^ args)
+	{
+		String^ error = "Hot3dxGraphicsXaml::App::UnhandledException: " + args->Message + "\n";
+		OutputDebugStringW(error->Data());
+	});
+#endif
+	
+
 }
 
 /// <summary>
@@ -52,16 +62,6 @@ void App::OnLaunched(Windows::ApplicationModel::Activation::LaunchActivatedEvent
 	}
 #endif
 
-	if (m_directXPage == nullptr)
-	{
-		m_directXPage = ref new DirectXPage();
-	}
-
-	if (e->PreviousExecutionState == ApplicationExecutionState::Terminated)
-	{
-		m_directXPage->LoadInternalState(ApplicationData::Current->LocalSettings->Values);
-	}
-
 	auto rootFrame = dynamic_cast<Frame^>(Window::Current->Content);
 
 	// Do not repeat app initialization when the Window already has content,
@@ -74,31 +74,34 @@ void App::OnLaunched(Windows::ApplicationModel::Activation::LaunchActivatedEvent
 
 		rootFrame->NavigationFailed += ref new Windows::UI::Xaml::Navigation::NavigationFailedEventHandler(this, &App::OnNavigationFailed);
 
-		if (rootFrame->Content == nullptr)
-		{
-			// When the navigation stack isn't restored navigate to the first page,
-			// configuring the new page by passing required information as a navigation
-			// parameter
-			rootFrame->Navigate(TypeName(DirectXPage::typeid), e->Arguments);
-		}
 		// Place the frame in the current Window
 		Window::Current->Content = rootFrame;
-		// Ensure the current window is active
-		Window::Current->Activate();
 	}
-	else
+
+	if (rootFrame->Content == nullptr)
 	{
-		if (rootFrame->Content == nullptr)
-		{
-			// When the navigation stack isn't restored navigate to the first page,
-			// configuring the new page by passing required information as a navigation
-			// parameter
-			rootFrame->Navigate(TypeName(DirectXPage::typeid), e->Arguments);
-		}
-		// Ensure the current window is active
-		Window::Current->Activate();
+		// When the navigation stack isn't restored navigate to the first page,
+		// configuring the new page by passing required information as a navigation
+		// parameter
+		rootFrame->Navigate(TypeName(DirectXPage::typeid), e->Arguments);
 	}
+
+	if (m_directXPage == nullptr)
+	{
+		m_directXPage = dynamic_cast<DirectXPage^>(rootFrame->Content);
+	}
+
+	if (e->PreviousExecutionState == ApplicationExecutionState::Terminated)
+	{
+		m_directXPage->LoadInternalState(ApplicationData::Current->LocalSettings->Values);
+	}
+
+	// Ensure the current window is active
+	Window::Current->Activate();
+	
 }
+
+
 
 /// <summary>
 /// Invoked when application execution is being suspended.  Application state is saved
@@ -120,7 +123,7 @@ void App::OnSuspending(Object^ sender, SuspendingEventArgs^ e)
 /// </summary>
 /// <param name="sender">The source of the resume request.</param>
 /// <param name="args">Details about the resume request.</param>
-void App::OnResuming(Object ^sender, Object ^args)
+void App::OnResuming(Object^ sender, Object^ args)
 {
 	(void) sender; // Unused parameter
 	(void) args; // Unused parameter
@@ -133,7 +136,7 @@ void App::OnResuming(Object ^sender, Object ^args)
 /// </summary>
 /// <param name="sender">The Frame which failed navigation</param>
 /// <param name="e">Details about the navigation failure</param>
-void App::OnNavigationFailed(Platform::Object ^sender, Windows::UI::Xaml::Navigation::NavigationFailedEventArgs ^e)
+void App::OnNavigationFailed(Platform::Object^ sender, Windows::UI::Xaml::Navigation::NavigationFailedEventArgs^ e)
 {
 	throw ref new FailureException("Failed to load Page " + e->SourcePageType.Name);
 }
@@ -165,7 +168,7 @@ std::shared_ptr<DX::DeviceResources> App::GetDeviceResources()
 	if (m_deviceResources == nullptr)
 	{
 		m_deviceResources = std::make_shared<DX::DeviceResources>();
-		m_deviceResources->SetWindow(Windows::UI::Core::CoreWindow::GetForCurrentThread());
+		m_deviceResources->SetCoreWindow(Windows::UI::Core::CoreWindow::GetForCurrentThread());
 		// resets TouchMap and do I even need it?
 		//m_main->CreateRenderers(m_deviceResources);
 	}

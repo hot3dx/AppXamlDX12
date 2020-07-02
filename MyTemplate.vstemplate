@@ -1,0 +1,54 @@
+<VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Project">
+  <TemplateData>
+    <Name>AppXamlDX12</Name>
+    <Description>RotoDraw Xaml DirectX 12 Template build 18362 by Jeff Kubitz OS Build 1909, Visual Studio 2019, tools 142</Description>
+    <ProjectType>VC</ProjectType>
+    <ProjectSubType>
+    </ProjectSubType>
+    <SortOrder>1200</SortOrder>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>AppXamlDX12</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+    <LocationField>Enabled</LocationField>
+    <EnableLocationBrowseButton>true</EnableLocationBrowseButton>
+    <Icon>__TemplateIcon.ico</Icon>
+    <PreviewImage>__PreviewImage.png</PreviewImage>
+  </TemplateData>
+  <TemplateContent>
+    <Project TargetFileName="AppXamlDX12.vcxproj" File="AppXamlDX12.vcxproj" ReplaceParameters="true">
+      <ProjectItem ReplaceParameters="false" TargetFileName="$projectname$.vcxproj.filters">AppXamlDX12.vcxproj.filters</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="Common\DeviceResources.cpp">Common\DeviceResources.cpp</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="Common\d3dx12.h">Common\d3dx12.h</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="Common\DeviceResources.h">Common\DeviceResources.h</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="Common\DirectXHelper.h">Common\DirectXHelper.h</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="Common\StepTimer.h">Common\StepTimer.h</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="Assets\LockScreenLogo.scale-200.png">Assets\LockScreenLogo.scale-200.png</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="Assets\SplashScreen.scale-200.png">Assets\SplashScreen.scale-200.png</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="Assets\Square150x150Logo.scale-200.png">Assets\Square150x150Logo.scale-200.png</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="Assets\Square44x44Logo.scale-200.png">Assets\Square44x44Logo.scale-200.png</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="Assets\Square44x44Logo.targetsize-24_altform-unplated.png">Assets\Square44x44Logo.targetsize-24_altform-unplated.png</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="Assets\StoreLogo.png">Assets\StoreLogo.png</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="Assets\Wide310x150Logo.scale-200.png">Assets\Wide310x150Logo.scale-200.png</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="Assets\AppXamlDX12.png">Assets\AppXamlDX12.png</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="Assets\AutoDraw2.ico">Assets\AutoDraw2.ico</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="Content\SamplePixelShader.hlsl">Content\SamplePixelShader.hlsl</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="Content\SampleVertexShader.hlsl">Content\SampleVertexShader.hlsl</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="Content\Sample3DSceneRenderer.cpp">Content\Sample3DSceneRenderer.cpp</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="Content\Sample3DSceneRenderer.h">Content\Sample3DSceneRenderer.h</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="Content\ShaderStructures.h">Content\ShaderStructures.h</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="App.xaml">App.xaml</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="App.xaml.cpp">App.xaml.cpp</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="App.xaml.h">App.xaml.h</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="AppXamlDX12Main.cpp">AppXamlDX12Main.cpp</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="pch.cpp">pch.cpp</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="AppXamlDX12Main.h">AppXamlDX12Main.h</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="pch.h">pch.h</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="Package.appxmanifest">Package.appxmanifest</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="packages.config">packages.config</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="ReadMe.md">ReadMe.md</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="DirectXPage.xaml">DirectXPage.xaml</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="DirectXPage.xaml.cpp">DirectXPage.xaml.cpp</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="DirectXPage.xaml.h">DirectXPage.xaml.h</ProjectItem>
+    </Project>
+  </TemplateContent>
+</VSTemplate>
