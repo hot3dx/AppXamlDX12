@@ -1,5 +1,5 @@
 # AppXamlDX12
-DirectX12UAP Xaml DirectX 12 Visual Studio 2019, OS Build 1909, tools 142, Windows 10 - The Cube
+DirectX12 Xaml Graphics/Game/App Engine Xaml DirectX 12 Visual Studio 2019, OS Build 1909, tools 142, Windows 10 - Rotodraw3D...
 
 ![](https://github.com/hot3dx/AppXamlDX12/blob/master/Assets/AppXamlDX12-2.png)
 
@@ -11,6 +11,18 @@ Build is Visual Studio 2019, OS Build 1909, tools 142. x64 Debug Native, nothing
 
 The warp adapter will kick if your hardware does not support straight DirectX 12 This means you can use this for the basis of Intel HD Graphics laptops, tablets, and other fine devices.
 Should you want to do anything complicated Chuck Walbourn's DirectX 12 Toolkit That I also have will attach to this with a little work.
+
+Requirements:
+Windows 10
+Microsoft Visual Studio 2019 16.6.3
+DirectX 12
+4 GB Ram 8 or More Better!
+Intel HG Graphics or DirectX 12 Graphics capable card
+NuGet Package WinPixEventRuntime 1.200127001
+
+##Much thanks to Chuck Walbourne and DXTK 12##
+
+Many if not all DXTK12 Examples can be coded for Xaml, if not all of them.
 
 Donations Appreciated:
 
