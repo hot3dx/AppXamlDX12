@@ -1,34 +1,29 @@
-﻿//--------------------------------------------------------------------------------------
-// File: 
-//
-// Copyright (c) Jeff Kubitz - hot3dx. All rights reserved.
-// 
-//
-//--------------------------------------------------------------------------------------
-#pragma once
+﻿#pragma once
 
 #include "..\Common\DeviceResources.h"
-#include "SceneRenderer.h"
 #include "Content\ShaderStructures.h"
 #include "..\Common\StepTimer.h"
-
 
 namespace AppXamlDX12
 {
 	// This sample renderer instantiates a basic rendering pipeline.
-	class Sample3DSceneRenderer
+	class CD3D12TetraXaml
 	{
 	public:
-		Sample3DSceneRenderer(const std::shared_ptr<DX::DeviceResources>& deviceResources,
-			const std::shared_ptr<SceneRenderer>& sceneRenderer);
-		~Sample3DSceneRenderer();
+		CD3D12TetraXaml(const std::shared_ptr<DX::DeviceResources>& deviceResources);
+		~CD3D12TetraXaml();
 		void CreateDeviceDependentResources();
 		void CreateWindowSizeDependentResources();
 		void Update(DX::StepTimer const& timer);
 		bool Render();
-		VertexPositionColor2* InitVB2(VertexPositionColor2* sphereVerts, int* numVerts);
+		VertexPositionColor4* InitVB2(VertexPositionColor4* sphereVerts, int* numVerts);
 
 		void SaveState();
+		// were private
+		void LoadState();
+		void Rotate(float radians);
+
+		// eo were private
 
 		void StartTracking();
 		void TrackingUpdate(float positionX);
@@ -36,15 +31,13 @@ namespace AppXamlDX12
 		bool IsTracking() { return m_tracking; }
 		void ReleaseDeviceDependentResources();
 
-		
 		//CCameraXYMoveRotation          m_CamXYMoveRotate;
 		bool                           is3DVisible;
 
 		ID3D12GraphicsCommandList* GetComList() { return m_commandList.Get(); }
 
 	private:
-		void LoadState();
-		void Rotate(float radians);
+		
 
 	private:
 		// Constant buffers must be 256-byte aligned.
@@ -52,7 +45,7 @@ namespace AppXamlDX12
 
 		// Cached pointer to device resources.
 		std::shared_ptr<DX::DeviceResources> m_deviceResources;
-		std::shared_ptr<SceneRenderer>   m_sceneRenderer;
+
 		// Direct3D resources for cube geometry.
 		Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>	m_commandList;
 		Microsoft::WRL::ComPtr<ID3D12RootSignature>			m_rootSignature;

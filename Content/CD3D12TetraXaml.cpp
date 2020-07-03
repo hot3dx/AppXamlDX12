@@ -1,13 +1,5 @@
-﻿//--------------------------------------------------------------------------------------
-// File: 
-//
-// Copyright (c) Jeff Kubitz - hot3dx. All rights reserved.
-// 
-//
-//--------------------------------------------------------------------------------------
-
-#include "pch.h"
-#include "Sample3DSceneRenderer.h"
+﻿#include "pch.h"
+#include "CD3D12TetraXaml.h"
 #include "..\Common\DirectXHelper.h"
 #include <ppltasks.h>
 #include <synchapi.h>
@@ -22,24 +14,21 @@ using namespace Windows::Foundation;
 using namespace Windows::Storage;
 
 // Indices into the application state map.
-// Indices into the application state map.
-Platform::String^ AngleKey = "Angle";
-Platform::String^ TrackingKey = "Tracking";
+Platform::String^ AngleKeyTetra = "Angle";
+Platform::String^ TrackingKeyTetra = "Tracking";
 
 
 //static CUSTOMVERTEX* vertices;
 
 
-// Loads vertex and pixel shaders from files and instantiates the cube geometry.
-Sample3DSceneRenderer::Sample3DSceneRenderer(const std::shared_ptr<DX::DeviceResources>& deviceResources,
-	const std::shared_ptr<SceneRenderer>& sceneRenderer) :
+// Loads vertex and pixel shaders from files and instantiates the tetra geometry.
+CD3D12TetraXaml::CD3D12TetraXaml(const std::shared_ptr<DX::DeviceResources>& deviceResources) :
 	m_loadingComplete(false),
 	m_radiansPerSecond(XM_PIDIV4 / 2),	// rotate 45 degrees per second
 	m_angle(0.01f),
 	m_tracking(false),
 	sceneVertexCount(8),
 	m_mappedConstantBuffer(nullptr),
-	m_sceneRenderer(sceneRenderer),
 	m_deviceResources(deviceResources)
 {
 	LoadState();
@@ -49,15 +38,15 @@ Sample3DSceneRenderer::Sample3DSceneRenderer(const std::shared_ptr<DX::DeviceRes
 	CreateWindowSizeDependentResources();
 }
 
-Sample3DSceneRenderer::~Sample3DSceneRenderer()
+CD3D12TetraXaml::~CD3D12TetraXaml()
 {
 	m_constantBuffer->Unmap(0, nullptr);
 	m_mappedConstantBuffer = nullptr;
 }
 
-void Sample3DSceneRenderer::CreateDeviceDependentResources()
+void CD3D12TetraXaml::CreateDeviceDependentResources()
 {
-	
+
 	auto d3dDevice = m_deviceResources->GetD3DDevice();
 
 	// Create a root signature with a single constant buffer slot.
@@ -133,7 +122,7 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
 		m_pixelShader.clear();
 	});
 
-	// Create and upload cube geometry resources to the GPU.
+	// Create and upload tetra geometry resources to the GPU.
 	auto createAssetsTask = createPipelineStateTask.then([this]() {
 		auto d3dDevice = m_deviceResources->GetD3DDevice();
 
@@ -141,27 +130,60 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
 		DX::ThrowIfFailed(d3dDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_deviceResources->GetCommandAllocator(), m_pipelineState.Get(), IID_PPV_ARGS(&m_commandList)));
 		NAME_D3D12_OBJECT(m_commandList);
 
-		// Cube vertices. Each vertex has a position and a color.
+		// tetra vertices. Each vertex has a position and a color.
 			
 		//sceneVertexCount = 8;
-		sceneVertexCount = 460;
+		sceneVertexCount = 4;
+		DWORD m_dwNVertices = 4;
+		XMFLOAT3* ptetras = new XMFLOAT3[m_dwNVertices];
+		float fScale = 10.0f;
+		XMFLOAT3 v; v.x = 2.0F; v.y = 0; v.z = 0;
 
-		VertexPositionColor2 cubeVertices[] =
+		VertexPositionColor4 tetraVertices[] =
 		
 		{
-			{ XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
-			{ XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f) },
-			{ XMFLOAT3(-0.5f,  0.5f, -0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f) },
-			{ XMFLOAT3(-0.5f,  0.5f,  0.5f), XMFLOAT3(0.0f, 1.0f, 1.0f) },
-			{ XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f) },
-			{ XMFLOAT3(0.5f, -0.5f,  0.5f), XMFLOAT3(1.0f, 0.0f, 1.0f) },
-			{ XMFLOAT3(0.5f,  0.5f, -0.5f), XMFLOAT3(1.0f, 1.0f, 0.0f) },
-			{ XMFLOAT3(0.5f,  0.5f,  0.5f), XMFLOAT3(1.0f, 1.0f, 1.0f) },
+			// {{(0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z }, { 0.8f, 0.8f, 0.0f, 1.0f } },
+			// {{(-0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.0f, 0.8f, 0.8f, 1.0f }},
+			// {{0.0f + v.x, 0.0f + v.y, (0.5f * fScale) + v.z},{0.8f, 0.0f, 0.8f, 1.0f}},
+			// {{0.0f + v.x, (-0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.8f, 0.8f, 0.8f, 1.0f}},
+
+			 {{(0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z }, { 0.8f, 0.8f, 0.0f, 1.0f } },
+			 {{(-0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.0f, 0.8f, 0.8f, 1.0f }},
+			 {{0.0f + v.x, 0.0f + v.y, (0.5f * fScale) + v.z},{0.8f, 0.0f, 0.8f, 1.0f}},
+
+			 {{(0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z }, { 0.8f, 0.8f, 0.0f, 1.0f } },
+			 {{0.0f + v.x, 0.0f + v.y, (0.5f * fScale) + v.z},{0.8f, 0.0f, 0.8f, 1.0f}},
+			 {{0.0f + v.x, (-0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.8f, 0.8f, 0.8f, 1.0f}},
+
+			 {{(0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z }, { 0.8f, 0.8f, 0.0f, 1.0f } },
+			 {{0.0f + v.x, (-0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.8f, 0.8f, 0.8f, 1.0f}},
+			 {{(-0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.0f, 0.8f, 0.8f, 1.0f }},
+
+			 {{(-0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.0f, 0.8f, 0.8f, 1.0f }},
+			 {{0.0f + v.x, (-0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.8f, 0.8f, 0.8f, 1.0f}},
+			 {{0.0f + v.x, 0.0f + v.y, (0.5f * fScale) + v.z},{0.8f, 0.0f, 0.8f, 1.0f}},
+
+			 {{0.0f + v.x, 0.0f + v.y, (0.5f * fScale) + v.z},{0.8f, 0.0f, 0.8f, 1.0f}},
+			 {{(-0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.0f, 0.8f, 0.8f, 1.0f }},
+			 {{(0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z }, { 0.8f, 0.8f, 0.0f, 1.0f } },
+
+			 {{0.0f + v.x, (-0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.8f, 0.8f, 0.8f, 1.0f}},
+			 {{0.0f + v.x, 0.0f + v.y, (0.5f * fScale) + v.z},{0.8f, 0.0f, 0.8f, 1.0f}},
+			 {{(0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z }, { 0.8f, 0.8f, 0.0f, 1.0f } },
+
+			 {{(-0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.0f, 0.8f, 0.8f, 1.0f }},
+			 {{0.0f + v.x, (-0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.8f, 0.8f, 0.8f, 1.0f}},
+			 {{(0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z }, { 0.8f, 0.8f, 0.0f, 1.0f } },
+
+			 {{0.0f + v.x, 0.0f + v.y, (0.5f * fScale) + v.z},{0.8f, 0.0f, 0.8f, 1.0f}},
+			 {{0.0f + v.x, (-0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.8f, 0.8f, 0.8f, 1.0f}},
+			 {{(-0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.0f, 0.8f, 0.8f, 1.0f }}
+
 		};
 		
 
 
-		const UINT vertexBufferSize = sizeof(cubeVertices);
+		const UINT vertexBufferSize = sizeof(tetraVertices);
 
 		// Create the vertex buffer resource in the GPU's default heap and copy vertex data into it using the upload heap.
 		// The upload resource must not be released until after the GPU has finished using it.
@@ -193,7 +215,7 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
 		{
 
 			D3D12_SUBRESOURCE_DATA vertexData = {};
-			vertexData.pData = reinterpret_cast<BYTE*>(cubeVertices);
+			vertexData.pData = reinterpret_cast<BYTE*>(tetraVertices);
 			vertexData.RowPitch = vertexBufferSize;
 			vertexData.SlicePitch = vertexData.RowPitch;
 
@@ -209,7 +231,7 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
 		// For example: 0,2,1 means that the vertices with indexes 0, 2 and 1 from the vertex buffer compose the
 		// first triangle of this mesh.
 		
-		unsigned short cubeIndices[] =
+		unsigned short tetraIndices[] =
 
 		{
 			0, 2, 1, // -x
@@ -231,7 +253,7 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
 			1, 7, 5,
 		};
 
-		const UINT indexBufferSize = sizeof(cubeIndices);
+		const UINT indexBufferSize = sizeof(tetraIndices);
 
 		// Create the index buffer resource in the GPU's default heap and copy index data into it using the upload heap.
 		// The upload resource must not be released until after the GPU has finished using it.
@@ -259,7 +281,7 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
 		// Upload the index buffer to the GPU.
 		{
 			D3D12_SUBRESOURCE_DATA indexData = {};
-			indexData.pData = reinterpret_cast<BYTE*>(cubeIndices);
+			indexData.pData = reinterpret_cast<BYTE*>(tetraIndices);
 			indexData.RowPitch = indexBufferSize;
 			indexData.SlicePitch = indexData.RowPitch;
 
@@ -322,11 +344,11 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
 
 		// Create vertex/index buffer views.
 		m_vertexBufferView.BufferLocation = m_vertexBuffer->GetGPUVirtualAddress();
-		m_vertexBufferView.StrideInBytes = sizeof(VertexPositionColor2);
-		m_vertexBufferView.SizeInBytes = sizeof(cubeVertices);
+		m_vertexBufferView.StrideInBytes = sizeof(VertexPositionColor);
+		m_vertexBufferView.SizeInBytes = sizeof(tetraVertices);
 
 		m_indexBufferView.BufferLocation = m_indexBuffer->GetGPUVirtualAddress();
-		m_indexBufferView.SizeInBytes = sizeof(cubeIndices);
+		m_indexBufferView.SizeInBytes = sizeof(tetraIndices);
 		m_indexBufferView.Format = DXGI_FORMAT_R16_UINT;
 
 
@@ -340,9 +362,8 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
 }
 
 // Initializes view parameters when the window size changes.
-void Sample3DSceneRenderer::CreateWindowSizeDependentResources()
+void CD3D12TetraXaml::CreateWindowSizeDependentResources()
 {
-	
 	Size outputSize = m_deviceResources->GetOutputSize();
 	float aspectRatio = outputSize.Width / outputSize.Height;
 	float fovAngleY = 70.0f * XM_PI / 180.0f;
@@ -387,15 +408,14 @@ void Sample3DSceneRenderer::CreateWindowSizeDependentResources()
 	XMStoreFloat4x4(&m_constantBufferData.view, XMMatrixTranspose(XMMatrixLookAtRH(eye, at, up)));
 }
 
-// Called once per frame, rotates the cube and calculates the model and view matrices.
-void Sample3DSceneRenderer::Update(DX::StepTimer const& timer)
+// Called once per frame, rotates the tetra and calculates the model and view matrices.
+void CD3D12TetraXaml::Update(DX::StepTimer const& timer)
 {
-	
 	if (m_loadingComplete)
 	{
 		if (!m_tracking)
 		{
-			// Rotate the cube a small amount.
+			// Rotate the tetra a small amount.
 			m_angle += static_cast<float>(timer.GetElapsedSeconds())* m_radiansPerSecond;
 
 			Rotate(m_angle);
@@ -409,55 +429,53 @@ void Sample3DSceneRenderer::Update(DX::StepTimer const& timer)
 }
 
 // Saves the current state of the renderer.
-void Sample3DSceneRenderer::SaveState()
+void CD3D12TetraXaml::SaveState()
 {
-	
 	auto state = ApplicationData::Current->LocalSettings->Values;
 
-	if (state->HasKey(m_sceneRenderer->AngleKey))
+	if (state->HasKey(AngleKeyTetra))
 	{
-		state->Remove(m_sceneRenderer->AngleKey);
+		state->Remove(AngleKeyTetra);
 	}
-	if (state->HasKey(m_sceneRenderer->TrackingKey))
+	if (state->HasKey(TrackingKeyTetra))
 	{
-		state->Remove(m_sceneRenderer->TrackingKey);
+		state->Remove(TrackingKeyTetra);
 	}
 
-	state->Insert(m_sceneRenderer->AngleKey, PropertyValue::CreateSingle(m_angle));
-	state->Insert(m_sceneRenderer->TrackingKey, PropertyValue::CreateBoolean(m_tracking));
+	state->Insert(AngleKeyTetra, PropertyValue::CreateSingle(m_angle));
+	state->Insert(TrackingKeyTetra, PropertyValue::CreateBoolean(m_tracking));
 }
 
 // Restores the previous state of the renderer.
-void Sample3DSceneRenderer::LoadState()
+void CD3D12TetraXaml::LoadState()
 {
 	auto state = ApplicationData::Current->LocalSettings->Values;
-	if (state->HasKey(m_sceneRenderer->AngleKey))
+	if (state->HasKey(AngleKeyTetra))
 	{
-		m_angle = safe_cast<IPropertyValue^>(state->Lookup(m_sceneRenderer->AngleKey))->GetSingle();
-		state->Remove(m_sceneRenderer->AngleKey);
+		m_angle = safe_cast<IPropertyValue^>(state->Lookup(AngleKeyTetra))->GetSingle();
+		state->Remove(AngleKeyTetra);
 	}
-	if (state->HasKey(m_sceneRenderer->TrackingKey))
+	if (state->HasKey(TrackingKeyTetra))
 	{
-		m_tracking = safe_cast<IPropertyValue^>(state->Lookup(m_sceneRenderer->TrackingKey))->GetBoolean();
-		state->Remove(m_sceneRenderer->TrackingKey);
+		m_tracking = safe_cast<IPropertyValue^>(state->Lookup(TrackingKeyTetra))->GetBoolean();
+		state->Remove(TrackingKeyTetra);
 	}
 }
 
-// Rotate the 3D cube model a set amount of radians.
-void Sample3DSceneRenderer::Rotate(float radians)
+// Rotate the 3D tetra model a set amount of radians.
+void CD3D12TetraXaml::Rotate(float radians)
 {
-	
 	// Prepare to pass the updated model matrix to the shader.
 	XMStoreFloat4x4(&m_constantBufferData.model, XMMatrixTranspose(XMMatrixRotationY(radians)));
 }
 
-void Sample3DSceneRenderer::StartTracking()
+void CD3D12TetraXaml::StartTracking()
 {
 	m_tracking = true;
 }
 
-// When tracking, the 3D cube can be rotated around its Y axis by tracking pointer position relative to the output screen width.
-void Sample3DSceneRenderer::TrackingUpdate(float positionX)
+// When tracking, the 3D tetra can be rotated around its Y axis by tracking pointer position relative to the output screen width.
+void CD3D12TetraXaml::TrackingUpdate(float positionX)
 {
 	if (m_tracking)
 	{
@@ -466,20 +484,19 @@ void Sample3DSceneRenderer::TrackingUpdate(float positionX)
 	}
 }
 
-void Sample3DSceneRenderer::StopTracking()
+void CD3D12TetraXaml::StopTracking()
 {
 	m_tracking = false;
 }
 
-void AppXamlDX12::Sample3DSceneRenderer::ReleaseDeviceDependentResources()
+void AppXamlDX12::CD3D12TetraXaml::ReleaseDeviceDependentResources()
 {
 	
 }
 
 // Renders one frame using the vertex and pixel shaders.
-bool Sample3DSceneRenderer::Render()
+bool CD3D12TetraXaml::Render()
 {
-	
 	// Loading is asynchronous. Only draw geometry after it's loaded.
 	if (!m_loadingComplete)
 	{
@@ -487,12 +504,12 @@ bool Sample3DSceneRenderer::Render()
 	}
 
 	if (m_deviceResources->GetCommandAllocator())
-		DX::ThrowIfFailed(m_deviceResources->GetCommandAllocator()->Reset());
+    //DX::ThrowIfFailed(m_deviceResources->GetCommandAllocator()->Reset());
 
 	// The command list can be reset anytime after ExecuteCommandList() is called.
 	DX::ThrowIfFailed(m_commandList->Reset(m_deviceResources->GetCommandAllocator(), m_pipelineState.Get()));
 
-	PIXBeginEvent(m_commandList.Get(), 0, L"Draw the cube");
+	PIXBeginEvent(m_commandList.Get(), 0, L"Draw the Tetra");
 	{
 		// Set the graphics root signature and descriptor heaps to be used by this frame.
 		m_commandList->SetGraphicsRootSignature(m_rootSignature.Get());
@@ -528,60 +545,92 @@ bool Sample3DSceneRenderer::Render()
 		m_commandList->IASetIndexBuffer(&m_indexBufferView);
 
 		//m_commandList->DrawInstanced(sceneVertexCount, 1, 0, 0);
-		m_commandList->DrawIndexedInstanced(36, 1, 0, 0, 0);
-		
-		
+		//m_commandList->DrawIndexedInstanced(36, 1, 0, 0, 0);
+		//m_commandList->DrawInstanced(460, 230, 0, 0);
+		m_commandList->DrawInstanced(24, 8, 0, 0);
 
 		// Indicate that the render target will now be used to present when the command list is done executing.
 		CD3DX12_RESOURCE_BARRIER presentResourceBarrier =
 			CD3DX12_RESOURCE_BARRIER::Transition(m_deviceResources->GetRenderTarget(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 		m_commandList->ResourceBarrier(1, &presentResourceBarrier);
-		
 	}
 	PIXEndEvent(m_commandList.Get());
 
 	DX::ThrowIfFailed(m_commandList->Close());
 
-	
 	// Execute the command list.
-	ID3D12CommandList* ppCommandLists1[] = {m_commandList.Get() };
-	m_deviceResources->GetCommandQueue()->ExecuteCommandLists(_countof(ppCommandLists1), ppCommandLists1);
-
+	ID3D12CommandList* ppCommandLists[] = { m_commandList.Get() };
+	m_deviceResources->GetCommandQueue()->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
+	    
 	return true;
 }
 
-VertexPositionColor2* AppXamlDX12::Sample3DSceneRenderer::InitVB2(VertexPositionColor2* cubeVerts, int* numVerts)
+VertexPositionColor4* AppXamlDX12::CD3D12TetraXaml::InitVB2(VertexPositionColor4* tetraVerts, int* numVerts)
 {
 	// Create the vertex buffer. Here we are allocating enough memory
 // (from the default pool) to hold all our 3 custom vertices. We also
 
-
+	/*
 	auto d3dDevice = m_deviceResources->GetD3DDevice();
 	DWORD dwcolor = 0x090900FF;
 
 	int vCount[1] = { 0 };
+	DWORD m_dwNVertices = 4;
+	XMFLOAT3* ptetras = new XMFLOAT3[m_dwNVertices];
+	float fScale = 10.0f;
+	XMFLOAT3 v; v.x = 0; v.y = 0; v.z = 0;
 	
-	VertexPositionColor2 v[] = 
+	VertexPositionColor v[] = 
 	{
-		{ XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
-		{ XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(-0.5f,  0.5f, -0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f) },
-		{ XMFLOAT3(-0.5f,  0.5f,  0.5f), XMFLOAT3(0.0f, 1.0f, 1.0f) },
-		{ XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f) },
-		{ XMFLOAT3(0.5f, -0.5f,  0.5f), XMFLOAT3(1.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(0.5f,  0.5f, -0.5f), XMFLOAT3(1.0f, 1.0f, 0.0f) },
-		{ XMFLOAT3(0.5f,  0.5f,  0.5f), XMFLOAT3(1.0f, 1.0f, 1.0f) },
+		// {{(0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z }, { 0.8f, 0.8f, 0.0f, 1.0f } },
+		// {{(-0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.0f, 0.8f, 0.8f, 1.0f }},
+		// {{0.0f + v.x, 0.0f + v.y, (0.5f * fScale) + v.z},{0.8f, 0.0f, 0.8f, 1.0f}},
+		// {{0.0f + v.x, (-0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.8f, 0.8f, 0.8f, 1.0f}},
+
+		 {{(0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z }, { 0.8f, 0.8f, 0.0f, 1.0f } },
+		 {{(-0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.0f, 0.8f, 0.8f, 1.0f }},
+		 {{0.0f + v.x, 0.0f + v.y, (0.5f * fScale) + v.z},{0.8f, 0.0f, 0.8f, 1.0f}},
+
+		 {{(0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z }, { 0.8f, 0.8f, 0.0f, 1.0f } },
+		 {{0.0f + v.x, 0.0f + v.y, (0.5f * fScale) + v.z},{0.8f, 0.0f, 0.8f, 1.0f}},
+		 {{0.0f + v.x, (-0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.8f, 0.8f, 0.8f, 1.0f}},
+
+		 {{(0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z }, { 0.8f, 0.8f, 0.0f, 1.0f } },
+		 {{0.0f + v.x, (-0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.8f, 0.8f, 0.8f, 1.0f}},
+		 {{(-0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.0f, 0.8f, 0.8f, 1.0f }},
+
+		 {{(-0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.0f, 0.8f, 0.8f, 1.0f }},
+		 {{0.0f + v.x, (-0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.8f, 0.8f, 0.8f, 1.0f}},
+		 {{0.0f + v.x, 0.0f + v.y, (0.5f * fScale) + v.z},{0.8f, 0.0f, 0.8f, 1.0f}},
+
+		 {{0.0f + v.x, 0.0f + v.y, (0.5f * fScale) + v.z},{0.8f, 0.0f, 0.8f, 1.0f}},
+		 {{(-0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.0f, 0.8f, 0.8f, 1.0f }},
+		 {{(0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z }, { 0.8f, 0.8f, 0.0f, 1.0f } },
+
+		 {{0.0f + v.x, (-0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.8f, 0.8f, 0.8f, 1.0f}},
+		 {{0.0f + v.x, 0.0f + v.y, (0.5f * fScale) + v.z},{0.8f, 0.0f, 0.8f, 1.0f}},
+		 {{(0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z }, { 0.8f, 0.8f, 0.0f, 1.0f } },
+
+		 {{(-0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.0f, 0.8f, 0.8f, 1.0f }},
+		 {{0.0f + v.x, (-0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.8f, 0.8f, 0.8f, 1.0f}},
+		 {{(0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z }, { 0.8f, 0.8f, 0.0f, 1.0f } },
+
+		 {{0.0f + v.x, 0.0f + v.y, (0.5f * fScale) + v.z},{0.8f, 0.0f, 0.8f, 1.0f}},
+		 {{0.0f + v.x, (-0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.8f, 0.8f, 0.8f, 1.0f}},
+		 {{(-0.5f * fScale) + v.x, (0.5f * fScale) + v.y, (-0.5f * fScale) + v.z},{0.0f, 0.8f, 0.8f, 1.0f }}
+
 	};
 
 	//CalculateMeshBoxAndCenterCV( v, vCount[0]);
-	int size = sizeof(VertexPositionColor2);
+	int size = sizeof(VertexPositionColor);
 	
-	std::vector<VertexPositionColor2> cubeVertices(vCount[0]);
-	//(VertexPositionColor2*)malloc(vCount[0] * sizeof(VertexPositionColor2));
+	std::vector<VertexPositionColor> tetraVertices(vCount[0]);
+	//(VertexPositionColor*)malloc(vCount[0] * sizeof(VertexPositionColor));
 
 
 	numVerts[0] = vCount[0];
 
-	
-	return cubeVerts;
+	*/
+
+	return tetraVerts;
 }

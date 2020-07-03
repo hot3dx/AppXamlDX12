@@ -1,32 +1,22 @@
-﻿//--------------------------------------------------------------------------------------
-// File: 
-//
-// Copyright (c) Jeff Kubitz - hot3dx. All rights reserved.
-// 
-//
-//--------------------------------------------------------------------------------------
-#pragma once
+﻿#pragma once
 
 #include "..\Common\DeviceResources.h"
-#include "SceneRenderer.h"
 #include "Content\ShaderStructures.h"
 #include "..\Common\StepTimer.h"
-
 
 namespace AppXamlDX12
 {
 	// This sample renderer instantiates a basic rendering pipeline.
-	class Sample3DSceneRenderer
+	class CD3D12GridXaml
 	{
 	public:
-		Sample3DSceneRenderer(const std::shared_ptr<DX::DeviceResources>& deviceResources,
-			const std::shared_ptr<SceneRenderer>& sceneRenderer);
-		~Sample3DSceneRenderer();
+		CD3D12GridXaml(const std::shared_ptr<DX::DeviceResources>& deviceResources);
+		~CD3D12GridXaml();
 		void CreateDeviceDependentResources();
 		void CreateWindowSizeDependentResources();
 		void Update(DX::StepTimer const& timer);
 		bool Render();
-		VertexPositionColor2* InitVB2(VertexPositionColor2* sphereVerts, int* numVerts);
+		VertexPositionColor4* InitVB2(VertexPositionColor4* sphereVerts, int* numVerts);
 
 		void SaveState();
 
@@ -36,7 +26,6 @@ namespace AppXamlDX12
 		bool IsTracking() { return m_tracking; }
 		void ReleaseDeviceDependentResources();
 
-		
 		//CCameraXYMoveRotation          m_CamXYMoveRotate;
 		bool                           is3DVisible;
 
@@ -52,14 +41,14 @@ namespace AppXamlDX12
 
 		// Cached pointer to device resources.
 		std::shared_ptr<DX::DeviceResources> m_deviceResources;
-		std::shared_ptr<SceneRenderer>   m_sceneRenderer;
+
 		// Direct3D resources for cube geometry.
 		Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>	m_commandList;
 		Microsoft::WRL::ComPtr<ID3D12RootSignature>			m_rootSignature;
 		Microsoft::WRL::ComPtr<ID3D12PipelineState>			m_pipelineState;
 		Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>		m_cbvHeap;
 		Microsoft::WRL::ComPtr<ID3D12Resource>				m_vertexBuffer;
-		Microsoft::WRL::ComPtr<ID3D12Resource>				m_indexBuffer;
+		
 		Microsoft::WRL::ComPtr<ID3D12Resource>				m_constantBuffer;
 		ModelViewProjectionConstantBuffer					m_constantBufferData;
 		UINT8* m_mappedConstantBuffer;
@@ -68,7 +57,7 @@ namespace AppXamlDX12
 		std::vector<byte>									m_vertexShader;
 		std::vector<byte>									m_pixelShader;
 		D3D12_VERTEX_BUFFER_VIEW							m_vertexBufferView;
-		D3D12_INDEX_BUFFER_VIEW								m_indexBufferView;
+		
 
 		// Variables used with the rendering loop.
 		bool	m_loadingComplete;

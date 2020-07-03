@@ -11,7 +11,14 @@ namespace AppXamlDX12
 	};
 
 	// Used to send per-vertex data to the vertex shader.
-	struct VertexPositionColor
+	struct VertexPositionColor4
+	{
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT4 color;
+	};
+
+	// Used to send per-vertex data to the vertex shader.
+	struct VertexPositionColor2
 	{
 		DirectX::XMFLOAT3 pos;
 		DirectX::XMFLOAT3 color;
