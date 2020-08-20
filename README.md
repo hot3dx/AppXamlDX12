@@ -43,6 +43,21 @@ Does not reset yet
 Hold Down mouse and draw points!
 Some screen movement not correct but working on it!
 
+# Errors
+
+In the event of an error,
+1) tiny.sdkmesh did not copy to AppX\\Assets\\
+for each Debug/Release x86/x64 combination
+2) SegoeUI_18.spritefont and segoeui.ttf
+did not copy to the AppX folder for
+Debug/Release x64.
+3) SegoeUI_18.spritefont and segoeui.ttf
+did not copy to the Debug/Release folder for
+Debug/Release x86.
+
+Manually copy those folders from App1\\Assets to 
+these above locations and it is magic!
+
 © 2019 GitHub, Inc.
 Terms
 Privacy
