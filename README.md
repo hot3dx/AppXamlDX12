@@ -1,5 +1,5 @@
 # AppXamlDX12
-DirectX12 Xaml Graphics/Game/App Engine Xaml DirectX 12 Visual Studio 2019, OS Build 1909, tools 142, Windows 10 - Rotodraw3D...
+DirectX12 Xaml Graphics/Game/App Engine Xaml DirectX 12 Visual Studio 2019, OS Build 20H2, tools 142, Windows 10 - Rotodraw3D... C++/C - 17
 
 ![](https://github.com/hot3dx/AppXamlDX12/blob/master/Assets/AppXamlDX12-2.png)
 
@@ -7,14 +7,14 @@ DirectX12 Xaml Graphics/Game/App Engine c++ MS VS 2019 16.6.3 by Hot3dx - Jeff K
 It is the DirectX 12 Xaml Graphics/Game Engine
 Have fun and there is nothing like being able to add a GUI through Xaml to a program, especially if it is DirectX 12
 This template should work in your main Microsoft Templates for Visual Studio 2019 and show up when you want a template for a DirectX 12 UAP, Universal Windows Xaml App, where you can use the designer.
-Build is Visual Studio 2019, OS Build 1909, tools 142. x64 Debug Native, nothing else tested
+Build is Visual Studio 2019, OS Build 20H2, tools 142. x64 Debug Native, nothing else tested
 
 The warp adapter will kick if your hardware does not support straight DirectX 12 This means you can use this for the basis of Intel HD Graphics laptops, tablets, and other fine devices.
 Should you want to do anything complicated Chuck Walbourn's DirectX 12 Toolkit That I also have will attach to this with a little work.
 
 Requirements:
 Windows 10
-Microsoft Visual Studio 2019 16.6.3
+Microsoft Visual Studio 2019 16.8.2
 DirectX 12
 4 GB Ram 8 or More Better!
 Intel HG Graphics or DirectX 12 Graphics capable card
@@ -36,6 +36,7 @@ By:
 ![Ico](https://github.com/hot3dx/AppXamlDX12/blob/master/Assets/AutoDraw2.ico)
 
 In order to make this work the first time
+Items 1 & 2 are no longer required as the DirectX12 3D Environment Appears Automatically!
 1) Press Set Colors Button
 2) Press New Button
 Does not reset yet
