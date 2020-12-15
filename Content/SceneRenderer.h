@@ -7,27 +7,27 @@
 //--------------------------------------------------------------------------------------
 #pragma once
 
-#include "..\Common\DeviceResources.h"
-#include "..\Content\ShaderStructures.h"
-#include "..\Common\StepTimer.h"
-#include "..\Graphics\AlignedNew.h"
-#include "..\Graphics\RenderTargetState.h"
-#include "..\Graphics\EffectPipelineStateDescription.h"
-#include "..\Graphics\CommonStates.h"
-#include "..\Graphics\GraphicsMemory.h"
-#include "..\Graphics\DescriptorHeap.h"
-#include "..\Graphics\EffectCommon.h"
-#include "..\Graphics\VertexTypes.h"
+#include "Common\DeviceResources.h"
+#include "Content\ShaderStructures.h"
+#include "Common\StepTimer.h"
+#include "Graphics\AlignedNew.h"
+#include "Graphics\RenderTargetState.h"
+#include "Graphics\EffectPipelineStateDescription.h"
+#include "Graphics\CommonStates.h"
+#include "Graphics\GraphicsMemory.h"
+#include "Graphics\DescriptorHeap.h"
+#include "Graphics\EffectCommon.h"
+#include "Graphics\VertexTypes.h"
 #include <SimpleMath.h>
-#include "..\Graphics\Model.h"
-#include "..\Graphics\PrimitiveBatch.h"
-#include "..\Graphics\GeometricPrimitive.h"
-#include "..\Graphics\SpriteBatch.h"
-#include "..\Graphics\SpriteFont.h"
-#include "..\Graphics\Hot3dxCamera.h"
-#include "..\Audio\Audio.h"
-#include "..\Audio\MediaReader.h"
-#include "..\Graphics\Hot3dxGeometry.h"
+#include "Graphics\Model.h"
+#include "Graphics\PrimitiveBatch.h"
+#include "Graphics\GeometricPrimitive.h"
+#include "Graphics\SpriteBatch.h"
+#include "Graphics\SpriteFont.h"
+#include "Graphics\Hot3dxCamera.h"
+#include "Audio\Audio.h"
+#include "Audio\MediaReader.h"
+#include "Graphics\Hot3dxGeometry.h"
 #include <thread>
 #include <chrono>
 #include <assert.h>
@@ -40,11 +40,13 @@
 namespace AppXamlDX12
 {
 	// This sample renderer instantiates a basic rendering pipeline.
-	class SceneRenderer
+	ref class SceneRenderer
 	{
-	public:
+	public:virtual ~SceneRenderer();
+
+	internal:
 		SceneRenderer(const std::shared_ptr<DX::DeviceResources>& deviceResources);
-		~SceneRenderer();
+		
 		void CreateDeviceDependentResources();
 		void CreateWindowSizeDependentResources();
 		void Update(DX::StepTimer const& timer);
@@ -64,34 +66,64 @@ namespace AppXamlDX12
 		//CCameraXYMoveRotation          m_CamXYMoveRotate;
 		void MouseCursorRender(float positionX, float positionY);
 		void DrawPointsOne(XMVECTOR intersect, float positiontX, float positionY);
-		bool                           is3DVisible;
+		
+		void LoadState();
+		void Rotate(float radians);
+		void XM_CALLCONV DrawGrid(FXMVECTOR xAxis, FXMVECTOR yAxis, FXMVECTOR origin, size_t xdivs, size_t ydivs, GXMVECTOR color);
+		void ScreenMouse3DWorldAlignment();
+		bool GetIs3DVisible() { return is3DVisible; }
+		void SetIs3DVisible(bool visible) { is3DVisible = visible; }
 
 		bool GetLoadingComplete() { return m_loadingComplete; }
 		void SetLoadingComplete(bool complete){ m_loadingComplete = complete; }
+		void Initialize();
+		void OnLButtonDown(UINT nFlags, XMFLOAT2 point);
+		void OnRightButtonDown(UINT nFlags, XMFLOAT2 point); 
+		void OnMouseMove(UINT nFlags, XMFLOAT2 point);
+		void ViewMatrix(XMFLOAT4X4 M, TCHAR* str);
+
+		// Accessors
+		bool Getm_bLButtonDown() { return m_bLButtonDown; }
+		bool Getm_bRButtonDown() { return m_bRButtonDown; }
+		bool Getm_bMButtonDown() { return m_bRButtonDown; }
+		bool Getm_bMouseMove() { return m_bMouseMove; }
+		void Setm_bLButtonDown(bool b) { m_bLButtonDown = b; }
+		void Setm_bRButtonDown(bool b) { m_bRButtonDown = b; }
+		void Setm_bMButtonDown(bool b) { m_bRButtonDown = b; }
+		void Setm_bMouseMove(bool b) { m_bMouseMove = b; }
+
+		Hot3dxCamera^ GetCamera() { return m_camera; }
+		void Setm_EyeX(float e) { m_EyeX += e; }
+		void Setm_EyeY(float e) { m_EyeY += e; }
+		void Setm_EyeZ(float e) { m_EyeZ += e; }
+		void Setm_LookAtX(float e) { m_LookAtX += e; }
+		void Setm_LookAtY(float e) { m_LookAtY += e; }
+		void Setm_LookAtZ(float e) { m_LookAtZ += e; }
+		void Setm_UpX(float e) { m_UpX += e; }
+		void Setm_UpY(float e) { m_UpY += e; }
+		void Setm_UpZ(float e) { m_UpZ += e; }
+		void RotatePitch(float degree);
+		void RotateYaw(float degree);
+
+		
+	protected private:
+		bool                           is3DVisible;
+
 		// Indices into the application state map.
+
 		Platform::String^ AngleKey = "Angle";
 		Platform::String^ TrackingKey = "Tracking";
-		
-
 		XMFLOAT3 pSect;
 		bool m_bFaceSelected;
 		int m_iV;
-		bool m_bLButtonDown;
-		bool m_bRButtonDown;
-		void Initialize();
-		void OnLButtonDown(UINT nFlags, XMFLOAT2 point);
-		void OnRightButtonDown(UINT nFlags, XMFLOAT2 point);
-		bool m_bMouseMove;
-		void OnMouseMove(UINT nFlags, XMFLOAT2 point);
-
-		void ViewMatrix(XMMATRIX m, TCHAR* str);
-
+		
 		unsigned int m_iPointCount;
 		unsigned int m_iTotalPointCount;
 		unsigned int m_iLastPoint;
 		XMFLOAT2 point;
-		unsigned int m_iTempGroup[10000];
-		XMFLOAT2 m_iTempMouse[10000];
+		Platform::Array<unsigned int>^ m_iTempGroup = ref new Platform::Array<unsigned int>(10000);
+		Platform::Array<float>^ m_iTempMouseX = ref new Platform::Array<float>(10000);
+		Platform::Array<float>^ m_iTempMouseY = ref new Platform::Array<float>(10000);
 
 		unsigned int m_iTempGroupCount;
 		unsigned int m_iGroupCount;
@@ -112,10 +144,7 @@ namespace AppXamlDX12
 		float m_heightRatio;
 
 	private:
-		void LoadState();
-		void Rotate(float radians);
-		void XM_CALLCONV DrawGrid(FXMVECTOR xAxis, FXMVECTOR yAxis, FXMVECTOR origin, size_t xdivs, size_t ydivs, GXMVECTOR color);
-		void ScreenMouse3DWorldAlignment();
+		
 
 	private:
 		// Constant buffers must be 256-byte aligned.
@@ -172,12 +201,15 @@ namespace AppXamlDX12
 		Microsoft::WRL::ComPtr<ID3D12Resource>                                  m_texture2; 
 		
 		
+		// Solution for Win32 warning is to use below instead of XMMATRIX
 		//DirectX::SimpleMath::Matrix
-		DirectX::XMMATRIX                                                        m_world;
+		DirectX::XMFLOAT4X4                                                        m_world4x4;
 		//DirectX::SimpleMath::Matrix  
-		DirectX::XMMATRIX                                                        m_view;
+		DirectX::XMFLOAT4X4                                                        m_view4x4;
 		//DirectX::SimpleMath::Matrix   
-			DirectX::XMMATRIX 	                                                 m_projection;
+		DirectX::XMFLOAT4X4 	                                              m_projection4x4;
+		XMMATRIX XM_CALLCONV SetXMMatrix(DirectX::XMFLOAT4X4 m, XMMATRIX xm);
+		XMMATRIX XM_CALLCONV GetXMMatrix(DirectX::XMFLOAT4X4 m);
 
 		// Descriptors
 			enum Descriptors
@@ -188,21 +220,27 @@ namespace AppXamlDX12
 				Count = 256
      		};
 
+			// 3D World Left or Right Hand flag
+			bool                                               m_IsLeftHanded;
+			bool m_bLButtonDown;
+			bool m_bRButtonDown;
+			bool m_bMButtonDown;
+			bool m_bMouseMove;
 			
 			Hot3dxCamera^ m_camera;
-			public:float m_EyeX;
-			public:float m_EyeY;
-			public:float m_EyeZ;
-			public:float m_LookAtX;
-			public:float m_LookAtY;
-			public:float m_LookAtZ;
-			public:float m_UpX;
-			public:float m_UpY;
-			public:float m_UpZ;
+			float m_EyeX;
+			float m_EyeY;
+			float m_EyeZ;
+			float m_LookAtX;
+			float m_LookAtY;
+			float m_LookAtZ;
+			float m_UpX;
+			float m_UpY;
+			float m_UpZ;
 			Audio^ m_audioController;
 			MediaReader^ mediaReader = ref new MediaReader();
 			// Screen Draw Variables
-			std::unique_ptr<CHot3dxD3D12Geometry> m_geo;
+			std::unique_ptr<AppXamlDX12::CHot3dxD3D12Geometry> m_geo;
 			struct Tetras
 			{
 				std::unique_ptr<DirectX::GeometricPrimitive>                   m_shapeTetra;
@@ -214,11 +252,12 @@ namespace AppXamlDX12
 			float m_posY;
 			float m_posZ;
 
-			float posX[10000];
-			float posY[10000];
-			float posZ[10000];
+			Platform::Array<float>^ posX = ref new Platform::Array<float>(10000);
+			Platform::Array<float>^ posY = ref new Platform::Array<float>(10000);
+			Platform::Array<float>^ posZ = ref new Platform::Array<float>(10000);
 
-			
+			// Set handed direction of world flag
+			bool    m_isRightHanded;
 	};
 }
 

@@ -61,8 +61,11 @@ SceneRenderer::SceneRenderer(const std::shared_ptr<DX::DeviceResources>& deviceR
 	m_angle(0.01f),
 	m_tracking(false),
 	sceneVertexCount(8),
-	m_sceneDeviceResources(deviceResources)
+	m_sceneDeviceResources(deviceResources),
+	m_isRightHanded(true)
 {
+	if (!m_isRightHanded) { m_EyeZ = -20.0f; }
+
 	LoadState();
 	ZeroMemory(&m_constantBufferData, sizeof(m_constantBufferData));
 	
@@ -214,9 +217,9 @@ void SceneRenderer::CreateDeviceDependentResources()
 					auto loaded = m_resourceUpload->EndXaml(m_sceneDeviceResources->GetCommandQueue());
 					WaitForSingleObject(m_resourceUpload->GetGPUHandle(), INFINITE);
 
-						m_shapeEffect->SetProjection(m_projection);
-						m_shapeTetraEffect->SetProjection(m_projection);
-						m_lineEffect->SetProjection(m_projection);
+					m_shapeEffect->SetProjection(XMLoadFloat4x4(&m_projection4x4));
+					m_shapeTetraEffect->SetProjection(XMLoadFloat4x4(&m_projection4x4));
+					m_lineEffect->SetProjection(XMLoadFloat4x4(&m_projection4x4));
 
 						const D3D12_VIEWPORT viewport = m_sceneDeviceResources->GetScreenViewport();
 						
@@ -262,13 +265,23 @@ void SceneRenderer::CreateWindowSizeDependentResources()
 	// this transform should not be applied.
 
 	// This sample makes use of a right-handed coordinate system using row-major matrices.
-	XMMATRIX perspectiveMatrix = XMMatrixPerspectiveFovRH(
-		fovAngleY,
-		aspectRatio,
-		0.01f,
-		100.0f
+	XMMATRIX perspectiveMatrix;
+	if (!m_isRightHanded) {
+		perspectiveMatrix = XMMatrixPerspectiveFovLH(
+			fovAngleY,
+			aspectRatio,
+			0.01f,
+			100.0f
 		);
-
+	}
+	else {
+		perspectiveMatrix = XMMatrixPerspectiveFovRH(
+			fovAngleY,
+			aspectRatio,
+			0.01f,
+			100.0f
+		);
+	}
 	XMFLOAT4X4 orientation = m_sceneDeviceResources->GetOrientationTransform3D();
 	XMMATRIX orientationMatrix = XMLoadFloat4x4(&orientation);
 
@@ -279,15 +292,23 @@ void SceneRenderer::CreateWindowSizeDependentResources()
 
 	// Eye is at (0,0.7,10.0), looking at point (0,-0.1,0) with the up-vector along the y-axis.
 	XMVECTOR eye = XMVectorSet(m_EyeX, m_EyeY, m_EyeZ, 0.0f);
-	XMVECTOR at = XMVectorSet(m_LookAtZ, m_LookAtY, m_LookAtZ, 0.0f);
+	XMVECTOR at = XMVectorSet(m_LookAtX, m_LookAtY, m_LookAtZ, 0.0f);
 	XMVECTOR up = XMVectorSet(m_UpX, m_UpY, m_UpZ, 0.0f);
 	XMFLOAT4 Feye = { m_EyeX, m_EyeY, m_EyeZ, 0.0f };
-	XMFLOAT4 Fat = { m_LookAtZ, m_LookAtY, m_LookAtZ, 0.0f };
-	DirectX::XMStoreFloat4x4(&m_constantBufferData.view, 
-		XMMatrixTranspose(XMMatrixLookAtRH(eye, at, up)));
+	XMFLOAT4 Fat = { m_LookAtX, m_LookAtY, m_LookAtZ, 0.0f };
+
+	if (!m_isRightHanded)
+	{
+		DirectX::XMStoreFloat4x4(&m_constantBufferData.view,
+			XMMatrixTranspose(XMMatrixLookAtRH(eye, at, up)));
+	}
+	else {
+		DirectX::XMStoreFloat4x4(&m_constantBufferData.view,
+			XMMatrixTranspose(XMMatrixLookAtRH(eye, at, up)));
+	}
 	XMStoreFloat4(&Feye, XMVector4Transform(XMLoadFloat4(&Feye), XMMatrixTranslation(Fat.x, Fat.y, Fat.z)));
 
-	m_projection = perspectiveMatrix * orientationMatrix;
+	XMStoreFloat4x4(&m_projection4x4, (perspectiveMatrix * orientationMatrix));
 }
 
 // Called once per frame, rotates the cube and calculates the model and view matrices.
@@ -313,22 +334,37 @@ void SceneRenderer::Update(DX::StepTimer const& timer)
 		PIXBeginEvent(PIX_COLOR_DEFAULT, L"Update");
 
 		m_camera->Eye(XMFLOAT3(m_EyeX, m_EyeY, m_EyeZ));
-		m_camera->LookDirection(XMFLOAT3(m_LookAtZ, m_LookAtY, m_LookAtZ));
+		m_camera->LookDirection(XMFLOAT3(m_LookAtX, m_LookAtY, m_LookAtZ));
 		m_camera->UpDirection(XMFLOAT3(m_UpX, m_UpY, m_UpZ));
 
 		XMVECTOR eye = XMVectorSet(m_EyeX, m_EyeY, m_EyeZ, 0.0f);
-		XMVECTOR at = XMVectorSet(m_LookAtZ, m_LookAtY, m_LookAtZ, 0.0f);
+		XMVECTOR at = XMVectorSet(m_LookAtX, m_LookAtY, m_LookAtZ, 0.0f);
 		XMVECTOR up = XMVectorSet(m_UpX, m_UpY, m_UpZ, 0.0f);
 		
 		XMFLOAT4 Feye = { m_EyeX, m_EyeY, m_EyeZ, 0.0f };
-		XMFLOAT4 Fat = { m_LookAtZ, m_LookAtY, m_LookAtZ, 0.0f };
+		XMFLOAT4 Fat = { m_LookAtX, m_LookAtY, m_LookAtZ, 0.0f };
 		XMFLOAT4 Fup = {m_UpX, m_UpY, m_UpZ, 0.0f};
-		DirectX::XMStoreFloat4x4(&m_constantBufferData.view,
-			XMMatrixTranspose(XMMatrixLookAtRH(eye, at, up)));
-		XMStoreFloat4(&Feye, XMVector4Transform(XMLoadFloat4(&Feye), XMMatrixTranslation(Feye.x, Feye.y, Feye.z)));
-		XMMatrixTranslation(Feye.x, Feye.y, Feye.z);
-		m_view = DirectX::XMMatrixLookAtRH(eye, at, up);
-		m_world = DirectX::XMMatrixRotationY(float(m_timer.GetTotalSeconds() * XM_PIDIV4));
+		if (!m_isRightHanded)
+		{
+			DirectX::XMStoreFloat4x4(&m_constantBufferData.view, DirectX::XMMatrixTranspose(DirectX::XMMatrixLookAtLH(eye, at, up)));
+			XMStoreFloat4(&Feye, XMVector4Transform(XMLoadFloat4(&Feye), XMMatrixTranslation(Feye.x, Feye.y, Feye.z)));
+			XMMatrixTranslation(Feye.x, Feye.y, Feye.z);
+			// store m_view
+			XMStoreFloat4x4(&m_view4x4, DirectX::XMMatrixLookAtLH(eye, at, up));
+			// store m_world 
+			XMStoreFloat4x4(&m_world4x4, DirectX::XMMatrixRotationY(float(m_timer.GetTotalSeconds() * XM_PIDIV4)));
+		}
+		else {
+
+			DirectX::XMStoreFloat4x4(&m_constantBufferData.view,
+				XMMatrixTranspose(XMMatrixLookAtRH(eye, at, up)));
+			XMStoreFloat4(&Feye, XMVector4Transform(XMLoadFloat4(&Feye), XMMatrixTranslation(Feye.x, Feye.y, Feye.z)));
+			XMMatrixTranslation(Feye.x, Feye.y, Feye.z);
+			// store m_view
+			XMStoreFloat4x4(&m_view4x4, DirectX::XMMatrixLookAtRH(eye, at, up));
+			// store m_world 
+			XMStoreFloat4x4(&m_world4x4, DirectX::XMMatrixRotationY(float(m_timer.GetTotalSeconds() * XM_PIDIV4)));
+		}
 		//m_world = DirectX::XMMatrixLookToRH(eye, at, up);
 		//eye = XMLoadFloat4(&Feye);
 		//at  = XMLoadFloat4(&Fat);
@@ -336,18 +372,18 @@ void SceneRenderer::Update(DX::StepTimer const& timer)
 		//XMStoreFloat4(&Fat, XMVector4Transform(XMLoadFloat4(&Fat), XMMatrixTranslation(Feye.x, Feye.y, Feye.z)));
 
 		//XMFLOAT3 feye = { m_EyeX, m_EyeY, m_EyeZ };
-		//XMFLOAT3 fat = { m_LookAtZ, m_LookAtY, m_LookAtZ};
+		//XMFLOAT3 fat = { m_LookAtX, m_LookAtY, m_LookAtZ};
 		//XMFLOAT3 fup = { m_UpX, m_UpY, m_UpZ,};
 		//m_camera->SetViewParams(feye, fat, fup);
 		//DirectX::XMStoreFloat4x4(&m_constantBufferData.view,
 		//	XMMatrixTranspose(XMMatrixLookAtRH(eye, at, up)));
 		//m_projection = perspectiveMatrix * orientationMatrix;
 
-		m_lineEffect->SetView(m_view);
+		m_lineEffect->SetView(XMLoadFloat4x4(&m_view4x4));
 		m_lineEffect->SetWorld(DirectX::XMMatrixIdentity());
 
-		m_shapeEffect->SetView(m_view);
-		m_shapeTetraEffect->SetView(m_view);
+		m_shapeEffect->SetView(XMLoadFloat4x4(&m_view4x4));
+		m_shapeTetraEffect->SetView(XMLoadFloat4x4(&m_view4x4));
 		
 		m_sprites->SetViewport(m_sceneDeviceResources->GetScreenViewport());
 		/*
@@ -531,11 +567,30 @@ void SceneRenderer::TrackingUpdate(float positionX, float positionY)
 		{
 			XMFLOAT3 intersect3 = {};
 			CHot3dxD3D12Geometry* geo = new CHot3dxD3D12Geometry();
-			XMVECTOR a = { 50.0f, 50.0f, 0.0f, 0.0f };
-			XMVECTOR b = { 50.0f, -50.0f, 0.0f, 0.0f };
-			XMVECTOR c = { -50.0f, -50.0f, 0.0f, 0.0f };
+
+			XMVECTOR a; XMVECTOR b; XMVECTOR c;
+#if defined(_XM_ARM_NEON_INTRINSICS_)
+			
+			a.n128_f32[0] = 50.0f;
+			a.n128_f32[1] = 50.0f;
+			a.n128_f32[2] = 0.0f;
+			a.n128_f32[3] = 0.0f;
+			b.n128_f32[0] = 50.0f;
+			b.n128_f32[1] = -50.0f;
+			b.n128_f32[2] = 0.0f;
+			b.n128_f32[3] = 0.0f;
+			c.n128_f32[0] = -50.0f;
+			c.n128_f32[1] = -50.0f;
+			c.n128_f32[2] = 0.0f;
+			c.n128_f32[3] = 0.0f;
+#endif
+#if defined(_XM_SSE_INTRINSICS_)
+			a = { 50.0f, 50.0f, 0.0f, 0.0f };
+			b = { 50.0f, -50.0f, 0.0f, 0.0f };
+			c = { -50.0f, -50.0f, 0.0f, 0.0f };
+#endif
 			XMVECTOR eye = XMVectorSet(m_EyeX, m_EyeY, m_EyeZ, 0.0f);
-			XMVECTOR lineDirection = XMVectorSet(m_LookAtZ, m_LookAtY, m_LookAtZ, 0.0f);
+			XMVECTOR lineDirection = XMVectorSet(m_LookAtX, m_LookAtY, m_LookAtZ, 0.0f);
 			XMVECTOR planeNormal = geo->FindPlaneNormalVec(a, b, c);
 			double planeConstant = geo->FindPlaneConstantVec(planeNormal, a);
 			XMVECTOR intersect = geo->FindPointIntersectPlaneVec(planeNormal, eye, lineDirection, 20.0f);
@@ -552,7 +607,8 @@ void SceneRenderer::TrackingUpdate(float positionX, float positionY)
 						pos.push_back(intersect3);
 
 						m_iTempGroup[m_iTempGroupCount] = m_iPointCount;
-						m_iTempMouse[m_iTempGroupCount] = point;
+						m_iTempMouseX[m_iTempGroupCount] = point.x;
+						m_iTempMouseY[m_iTempGroupCount] = point.y;
 						//p.Format(L"%d",m_iPointCount);
 						//apoint->m_sName = p;
 						m_iTempGroupCount++;
@@ -566,7 +622,8 @@ void SceneRenderer::TrackingUpdate(float positionX, float positionY)
 					pos.push_back(intersect3);
 
 					m_iTempGroup[m_iTempGroupCount] = m_iPointCount;
-					m_iTempMouse[m_iTempGroupCount] = point;
+					m_iTempMouseX[m_iTempGroupCount] = point.x;
+					m_iTempMouseY[m_iTempGroupCount] = point.y;
 					m_iTempGroupCount++;
 					m_iPointCount++;
 					//p.Format(L"%d",m_iPointCount);
@@ -671,15 +728,34 @@ void AppXamlDX12::SceneRenderer::MouseCursorRender(float positionX, float positi
 
 
 			XMVECTOR xx, yy, zz;
+			XMVECTOR m_vMouse3dPos;
+#if defined(_XM_ARM_NEON_INTRINSICS_)
+			XMVECTOR m_vXAxis;
+			m_vXAxis.n128_f32[0] = 0.0f; m_vXAxis.n128_f32[1] = 0.0f; m_vXAxis.n128_f32[2] = 0.0f;
+			xx = XMVectorScale(m_vXAxis, x);
+			XMVECTOR m_vYAxis;
+			m_vYAxis.n128_f32[0] = 0.0f; m_vYAxis.n128_f32[1] = 0.0f; m_vYAxis.n128_f32[2] = 0.0f;
+			yy = XMVectorScale(m_vYAxis, y);
+			XMVECTOR m_vZAxis;
+			m_vZAxis.n128_f32[0] = 0.0f; m_vZAxis.n128_f32[1] = 0.0f; m_vZAxis.n128_f32[2] = 0.0f;
+			zz = XMVectorScale(m_vZAxis, z);
+			m_vMouse3dPos.n128_f32[0] = ((XMVectorGetX(yy) - XMVectorGetX(xx)) + m_LookAtX);
+			m_vMouse3dPos.n128_f32[1] = ((XMVectorGetY(yy) - XMVectorGetY(xx)) + m_LookAtY);
+			m_vMouse3dPos.n128_f32[2] = ((XMVectorGetZ(yy) - XMVectorGetZ(xx)) + m_LookAtZ);
+		
+
+#endif
+#if defined(_XM_SSE_INTRINSICS_)
 			FXMVECTOR m_vXAxis = { 0.0f, 0.0f, 0.0f };
 			xx = XMVectorScale(m_vXAxis, x);
 			FXMVECTOR m_vYAxis = { 0.0f, 0.0f, 0.0f };
 			yy = XMVectorScale(m_vYAxis, y);
 			FXMVECTOR m_vZAxis = { 0.0f, 0.0f, 0.0f };
 			zz = XMVectorScale(m_vZAxis, z);
+			m_vMouse3dPos = { ((XMVectorGetX(yy) - XMVectorGetX(xx)) + m_LookAtX), ((XMVectorGetY(yy) - XMVectorGetY(xx)) + m_LookAtY), ((XMVectorGetZ(yy) - XMVectorGetZ(xx)) + m_LookAtZ) };
 
-			XMVECTOR m_vMouse3dPos = { ((XMVectorGetX(yy) - XMVectorGetX(xx)) + m_LookAtX), ((XMVectorGetY(yy) - XMVectorGetY(xx)) + m_LookAtY), ((XMVectorGetZ(yy) - XMVectorGetZ(xx)) + m_LookAtZ) };
-
+#endif
+			
 			if (m_bLButtonDown == true)
 			{
 				DrawPointsOne(m_vMouse3dPos, positionX, positionY);
@@ -694,10 +770,12 @@ void AppXamlDX12::SceneRenderer::MouseCursorRender(float positionX, float positi
 				// This disables relative mouse movement events.
 			//CoreWindow::GetForCurrentThread()->PointerCursor = ref new CoreCursor(CoreCursorType::Cross, 1);
 
-			ViewMatrix(m_view, L"m_view");
-			ViewMatrix(m_projection, L"m_projection");
+			ViewMatrix(m_view4x4, L"m_view");
+
+			ViewMatrix(m_projection4x4, L"m_projection");
 			//XMMatrixTransformation(D3DTS_WORLD, &matWorld);
-			ViewMatrix(m_world, L"m_world");
+
+			ViewMatrix(m_world4x4, L"m_world");
 
 			//m_bRotating = false;
 			////////////////////////////////////////..
@@ -725,7 +803,8 @@ void AppXamlDX12::SceneRenderer::DrawPointsOne(XMVECTOR intersect, float positio
 					posZ[m_iPointCount] = XMVectorGetZ(intersect);
 
 					m_iTempGroup[m_iTempGroupCount] = m_iPointCount;
-					m_iTempMouse[m_iTempGroupCount] = point;
+					m_iTempMouseX[m_iTempGroupCount] = point.x;
+					m_iTempMouseY[m_iTempGroupCount] = point.y;
 					
 					m_iTempGroupCount++;
 					m_iPointCount++;
@@ -739,7 +818,8 @@ void AppXamlDX12::SceneRenderer::DrawPointsOne(XMVECTOR intersect, float positio
 				posZ[m_iPointCount] = XMVectorGetZ(intersect);
 
 				m_iTempGroup[m_iTempGroupCount] = m_iPointCount;
-				m_iTempMouse[m_iTempGroupCount] = point;
+				m_iTempMouseX[m_iTempGroupCount] = point.x;
+				m_iTempMouseY[m_iTempGroupCount] = point.y;
 				m_iTempGroupCount++;
 				m_iPointCount++;
 				
@@ -1147,7 +1227,7 @@ bool SceneRenderer::Render()
 	{
 		return false;
 	}
-	
+
 	// Prepare the command list to render a new frame.
 	m_sceneDeviceResources->Prepare();
 	Clear();
@@ -1162,11 +1242,11 @@ bool SceneRenderer::Render()
 	const XMVECTORF32 yaxis1 = { 0.f, 10.f, 0.f };
 	const XMVECTORF32 zaxis1 = { 0.f, 0.f, 0.f };
 	DrawGrid(xaxis1, yaxis1, zaxis1, 10, 10, Colors::Crimson);
-	
+
 	// Set the descriptor heaps
 	ID3D12DescriptorHeap* heaps[] = { m_resourceDescriptors->Heap(), m_states->Heap() };
 	commandList->SetDescriptorHeaps(_countof(heaps), heaps);
-	
+
 	// Draw sprite
 	PIXBeginEvent(commandList, PIX_COLOR_DEFAULT, L"Draw sprite");
 	m_sprites->Begin(commandList);
@@ -1175,18 +1255,19 @@ bool SceneRenderer::Render()
 	m_font->DrawString(m_sprites.get(), L"Hot3dx AppXamlDX12 Dev Res", XMFLOAT2(100, 370), Colors::Yellow);
 	m_smallFont->DrawString(m_sprites.get(), L"Hi from the redneck hovel", XMFLOAT2(100, 400), Colors::DarkSeaGreen);
 	m_sprites->End();
-	
+
 	PIXEndEvent(commandList);
 	// Draw 3D object
 	PIXBeginEvent(commandList, PIX_COLOR_DEFAULT, L"Draw teapot");
-	
-	DirectX::XMMATRIX local = m_world * DirectX::XMMatrixTranslation(-2.f, -2.f, -10.f);
+
+	DirectX::XMMATRIX local = (XMLoadFloat4x4(&m_world4x4) * DirectX::XMMatrixTranslation(-2.f, -2.f, -10.f));
+	//DirectX::XMMATRIX local = m_world * DirectX::XMMatrixTranslation(-2.f, -2.f, -10.f);
 	m_shapeEffect->SetWorld(local);
 	m_shapeEffect->Apply(commandList);
 	m_shape->Draw(commandList);
 	for (unsigned int i = 0; i < m_iPointCount; i++)
 	{
-		DirectX::XMMATRIX localTetra = m_world * DirectX::XMMatrixTranslation(posX[i], posY[i], posZ[i]);
+		DirectX::XMMATRIX localTetra = (XMLoadFloat4x4(&m_world4x4) * DirectX::XMMatrixTranslation(posX[i], posY[i], posZ[i]));
 		m_shapeTetraEffect->SetWorld(localTetra);
 		m_shapeTetraEffect->Apply(commandList);
 		m_shapeTetra->Draw(commandList);
@@ -1198,11 +1279,18 @@ bool SceneRenderer::Render()
 	const XMVECTORF32 scale = { 0.01f, 0.01f, 0.01f };
 	const XMVECTORF32 translate = { 3.f, -2.f, -10.f };
 	// Old DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(XM_PI / 2.f, 0.f, -XM_PI / 2.f);
-	XMVECTOR angles = { XM_PI / 2.f, 0.f, -XM_PI / 2.f }; 
+
+	XMVECTOR angles;
+#if defined(_XM_ARM_NEON_INTRINSICS_)
+	angles.n128_f32[0] = XM_PI / 2.f; angles.n128_f32[0] = 0.f; angles.n128_f32[0] = -XM_PI / 2.f;
+#endif
+#if defined(_XM_SSE_INTRINSICS_)
+	angles = { XM_PI / 2.f, 0.f, -XM_PI / 2.f };
+#endif
 	XMVECTOR rotate = DirectX::XMQuaternionRotationRollPitchYawFromVector(angles);
 	// Old local = m_world * XMMatrixTransformation(g_XMZero, DirectX::SimpleMath::Quaternion::Identity, scale, g_XMZero, rotate, translate);
-	local = m_world * XMMatrixTransformation(g_XMZero, DirectX::XMQuaternionIdentity(), scale, g_XMZero, rotate, translate);
-	Model::UpdateEffectMatrices(m_modelEffects, local, m_view, m_projection);
+	local = XMLoadFloat4x4(&m_world4x4) * XMMatrixTransformation(g_XMZero, DirectX::XMQuaternionIdentity(), scale, g_XMZero, rotate, translate);
+	Model::UpdateEffectMatrices(m_modelEffects, local, XMLoadFloat4x4(&m_view4x4), XMLoadFloat4x4(&m_projection4x4));
 	heaps[0] = m_modelResources->Heap();
 	commandList->SetDescriptorHeaps(_countof(heaps), heaps);
 	m_model->Draw(commandList, m_modelEffects.begin());
@@ -1288,24 +1376,38 @@ void XM_CALLCONV SceneRenderer::DrawGrid(FXMVECTOR xAxis, FXMVECTOR yAxis, FXMVE
 	PIXEndEvent(commandList);
 }
 
-void AppXamlDX12::SceneRenderer::ViewMatrix(XMMATRIX m, TCHAR* str)
+void AppXamlDX12::SceneRenderer::ViewMatrix(XMFLOAT4X4 m, TCHAR* str)
 {
-	XMMatrixSet(m.r[0].m128_f32[0], m.r[0].m128_f32[1], m.r[0].m128_f32[2], m.r[0].m128_f32[3],
-		m.r[1].m128_f32[0], m.r[1].m128_f32[1], m.r[1].m128_f32[2], m.r[1].m128_f32[3],
-		m.r[2].m128_f32[0], m.r[2].m128_f32[1], m.r[2].m128_f32[2], m.r[2].m128_f32[3],
-		m.r[3].m128_f32[0], m.r[3].m128_f32[1], m.r[3].m128_f32[2], m.r[3].m128_f32[3]);
 	
-	TCHAR dest[500] = {};;
-	TCHAR* s = TEXT("%s\n%s\n%.6f  %.6f  %.6f %.6f\n%.6f  %.6f  %.6f %.6f\n%.6f  %.6f  %.6f %.6f\n%.6f  %.6f  %.6f %.6f\n");
-	TCHAR* t = TEXT("The Matrix values: \n");
+    XMMatrixSet(m._11, m._12, m._13, m._14,
+	    m._21, m._22, m._23, m._24,
+		m._31, m._32, m._33, m._34,
+		m._41, m._42, m._43, m._44
+		);
 
-		StringCbPrintf(dest, 500, s, t, str, 
-			m.r[0].m128_f32[0], m.r[0].m128_f32[1], m.r[0].m128_f32[2], m.r[0].m128_f32[3],
-			m.r[1].m128_f32[0], m.r[1].m128_f32[1], m.r[1].m128_f32[2], m.r[1].m128_f32[3],
-			m.r[2].m128_f32[0], m.r[2].m128_f32[1], m.r[2].m128_f32[2], m.r[2].m128_f32[3],
-			m.r[3].m128_f32[0], m.r[3].m128_f32[1], m.r[3].m128_f32[2], m.r[3].m128_f32[3]);
-		OutputDebugString(dest);
-	//SetDlgItemText(n, s);
+
+    wchar_t* t = {};
+    //OutputDebugString(t);
+    //OutputDebugString(str);
+
+    wchar_t* s = { L"\nThe Matrix values: \n%s\n%.6f  %.6f  %.6f %.6f\n%.6f  %.6f  %.6f %.6f\n%.6f  %.6f  %.6f %.6f\n%.6f  %.6f  %.6f %.6f\n" };
+    swprintf_s(t, 1000, s, str, m._11, m._12, m._13, m._14,
+	     m._21, m._22, m._23, m._24,
+	     m._31, m._32, m._33, m._34,
+	     m._41, m._42, m._43, m._44);
+
+
+     OutputDebugString(t);
+}
+
+void AppXamlDX12::SceneRenderer::RotatePitch(float degree)
+{
+	//m_camera->RotatePitch(degree);
+}
+
+void AppXamlDX12::SceneRenderer::RotateYaw(float degree)
+{
+	// m_camera->RotateYaw(degree);
 }
 
 void AppXamlDX12::SceneRenderer::ScreenMouse3DWorldAlignment()
@@ -1316,6 +1418,23 @@ void AppXamlDX12::SceneRenderer::ScreenMouse3DWorldAlignment()
 
 	StringCbPrintf(dest, 500, s, t, m_widthRatio, m_heightRatio);
 	OutputDebugString(dest);
+}
+XMMATRIX XM_CALLCONV AppXamlDX12::SceneRenderer::SetXMMatrix(DirectX::XMFLOAT4X4 m, XMMATRIX xm)
+{
+	xm = XMMatrixSet(m._11, m._12, m._13, m._14,
+		m._21, m._22, m._23, m._24,
+		m._31, m._32, m._33, m._34,
+		m._41, m._42, m._43, m._44
+	);
+	return xm;
+}
+XMMATRIX XM_CALLCONV AppXamlDX12::SceneRenderer::GetXMMatrix(DirectX::XMFLOAT4X4 m)
+{
+	return XMMatrixSet(m._11, m._12, m._13, m._14,
+		m._21, m._22, m._23, m._24,
+		m._31, m._32, m._33, m._34,
+		m._41, m._42, m._43, m._44
+	);
 }
 #pragma endregion
 
