@@ -9,7 +9,7 @@
 //--------------------------------------------------------------------------------------
 
 #include "pch.h"
-#include "..\Common\d3dx12.h"
+#include "Common\d3dx12.h"
 #include "DirectXHelpers.h"
 #include "PlatformHelpers.h"
 #include "MyResourceUploadBatch.h"
@@ -621,12 +621,10 @@ Concurrency::task<void> EndXaml(
                 // Delete the batch
                 // Because the vectors contain smart-pointers, their destructors will
                 // fire and the resources will be released.
-                OutputDebugString(L"ResourceUloadBatch1 loaded UploadBatch\n");
-                delete uploadBatch;
+               delete uploadBatch;
                 
             }).then([this]
             {
-                OutputDebugString(L"ResourceUloadBatch2 return doBatch\n");
                 // Reset our state
                 mInBeginEndBlock = false;
                 mList.Reset();
@@ -635,7 +633,7 @@ Concurrency::task<void> EndXaml(
                 // Swap above should have cleared these
                 assert(mTrackedObjects.empty());
                 assert(mTrackedMemoryResources.empty());
-                OutputDebugString(L"ResourceUloadBatch2 loaded UploadBatch\n");
+               
                 
             }); return doBatch;
 

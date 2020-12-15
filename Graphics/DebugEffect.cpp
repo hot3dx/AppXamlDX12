@@ -93,14 +93,11 @@ const D3D12_SHADER_BYTECODE EffectBase<DebugEffectTraits>::VertexShaderBytecode[
     { DebugEffect_VSDebugVc,    sizeof(DebugEffect_VSDebugVc)   },
 
     { DebugEffect_VSDebugBn,    sizeof(DebugEffect_VSDebugBn)   },
-    { DebugEffect_VSDebugVcBn,  sizeof(DebugEffect_VSDebugVcBn) },
+    { DebugEffect_VSDebugVcBn,  sizeof(DebugEffect_VSDebugVcBn) }
 };
 
-
-template<>
-const int EffectBase<DebugEffectTraits>::VertexShaderIndices[] =
-{    
-    0,      // default
+/* The List
+0,      // default
     0,      // normals
     0,      // tangents
     0,      // bitangents
@@ -119,6 +116,27 @@ const int EffectBase<DebugEffectTraits>::VertexShaderIndices[] =
     3,      // vertex color (biased vertex normal) + normals
     3,      // vertex color (biased vertex normal) + tangents
     3,      // vertex color (biased vertex normal) + bitangents
+*/
+
+template<>
+const int EffectBase<DebugEffectTraits>::VertexShaderIndices[] =
+{    
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    3,
+    3,
+    3,
+    3
 };
 
 
@@ -128,13 +146,10 @@ const D3D12_SHADER_BYTECODE EffectBase<DebugEffectTraits>::PixelShaderBytecode[]
     { DebugEffect_PSHemiAmbient,    sizeof(DebugEffect_PSHemiAmbient)          },
     { DebugEffect_PSRGBNormals,     sizeof(DebugEffect_PSRGBNormals)     },
     { DebugEffect_PSRGBTangents,    sizeof(DebugEffect_PSRGBTangents)    },
-    { DebugEffect_PSRGBBiTangents,  sizeof(DebugEffect_PSRGBBiTangents) },
+    { DebugEffect_PSRGBBiTangents,  sizeof(DebugEffect_PSRGBBiTangents) }
 };
 
-
-template<>
-const int EffectBase<DebugEffectTraits>::PixelShaderIndices[] =
-{    
+/* The List 
     0,      // default
     1,      // normals
     2,      // tangents
@@ -154,6 +169,26 @@ const int EffectBase<DebugEffectTraits>::PixelShaderIndices[] =
     1,      // vertex color (biased vertex normal) + normals
     2,      // vertex color (biased vertex normal) + tangents
     3,      // vertex color (biased vertex normal) + bitangents
+*/
+template<>
+const int EffectBase<DebugEffectTraits>::PixelShaderIndices[] =
+{    
+    0,
+    1,
+    2,
+    3,
+    0,
+    1,
+    2,
+    3,
+    0,
+    1,
+    2,
+    3,
+    0,
+    1,
+    2,
+    3
 };
 
 

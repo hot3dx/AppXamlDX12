@@ -57,19 +57,19 @@ void ModelMeshPart::Draw(_In_ ID3D12GraphicsCommandList* commandList) const
 {
     if (!indexBufferSize || !vertexBufferSize)
     {
-        DebugTrace("ERROR: Model part missing values for vertex and/or index buffer size (indexBufferSize %u, vertexBufferSize %u)!\n", indexBufferSize, vertexBufferSize);
+        DebugTrace(L"ERROR: Model part missing values for vertex and/or index buffer size (indexBufferSize %u, vertexBufferSize %u)!\n", indexBufferSize, vertexBufferSize);
         throw std::exception("ModelMeshPart");
     }
 
     if (!staticIndexBuffer && !indexBuffer)
     {
-        DebugTrace("ERROR: Model part missing index buffer!\n");
+        DebugTrace(L"ERROR: Model part missing index buffer!\n");
         throw std::exception("ModelMeshPart");
     }
 
     if (!staticVertexBuffer && !vertexBuffer)
     {
-        DebugTrace("ERROR: Model part missing vertex buffer!\n");
+        DebugTrace(L"ERROR: Model part missing vertex buffer!\n");
         throw std::exception("ModelMeshPart");
     }
 
@@ -96,19 +96,19 @@ void ModelMeshPart::DrawInstanced(_In_ ID3D12GraphicsCommandList* commandList, u
 {
     if (!indexBufferSize || !vertexBufferSize)
     {
-        DebugTrace("ERROR: Model part missing values for vertex and/or index buffer size (indexBufferSize %u, vertexBufferSize %u)!\n", indexBufferSize, vertexBufferSize);
+        DebugTrace(L"ERROR: Model part missing values for vertex and/or index buffer size (indexBufferSize %u, vertexBufferSize %u)!\n", indexBufferSize, vertexBufferSize);
         throw std::exception("ModelMeshPart");
     }
 
     if (!staticIndexBuffer && !indexBuffer)
     {
-        DebugTrace("ERROR: Model part missing index buffer!\n");
+        DebugTrace(L"ERROR: Model part missing index buffer!\n");
         throw std::exception("ModelMeshPart");
     }
 
     if (!staticVertexBuffer && !vertexBuffer)
     {
-        DebugTrace("ERROR: Model part missing vertex buffer!\n");
+        DebugTrace(L"ERROR: Model part missing vertex buffer!\n");
         throw std::exception("ModelMeshPart");
     }
 
@@ -303,7 +303,7 @@ void Model::LoadStaticBuffers(
         {
             if (!part->vertexBuffer)
             {
-                DebugTrace("ERROR: Model part missing vertex buffer!\n");
+                DebugTrace(L"ERROR: Model part missing vertex buffer!\n");
                 throw std::exception("ModelMeshPart");
             }
 
@@ -359,7 +359,7 @@ void Model::LoadStaticBuffers(
         {
             if (!part->indexBuffer)
             {
-                DebugTrace("ERROR: Model part missing index buffer!\n");
+                DebugTrace(L"ERROR: Model part missing index buffer!\n");
                 throw std::exception("ModelMeshPart");
             }
 
@@ -423,7 +423,7 @@ std::vector<std::shared_ptr<IEffect>> Model::CreateEffects(
 {
     if (materials.empty())
     {
-        DebugTrace("ERROR: Model has no material information to create effects!\n");
+        DebugTrace(L"ERROR: Model has no material information to create effects!\n");
         throw std::exception("CreateEffects");
     }
 

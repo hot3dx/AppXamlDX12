@@ -8,7 +8,7 @@
 //--------------------------------------------------------------------------------------
 
 #include "pch.h"
-#include "..\pch.h"
+#include "pch.h"
 #include "GraphicsMemory.h"
 #include "PlatformHelpers.h"
 #include "LinearAllocator.h"
@@ -117,7 +117,7 @@ namespace
             auto page = allocator->FindPageForAlloc(size, alignment);
             if (!page)
             {
-                DebugTrace("GraphicsMemory failed to allocate page (%zu requested bytes, %zu alignment)\n", size, alignment);
+                DebugTrace(L"GraphicsMemory failed to allocate page (%zu requested bytes, %zu alignment)\n", size, alignment);
                 throw std::bad_alloc();
             }
 
@@ -210,16 +210,14 @@ public:
     {
         mDeviceAllocator = std::make_unique<DeviceAllocator>(device);
 
-#if !defined(_XBOX_ONE) || !defined(_TITLE)
+//#if !defined(_XBOX_ONE) || !defined(_TITLE)
         if (s_graphicsMemory.find(device) != s_graphicsMemory.cend())
         {
             throw std::exception("GraphicsMemory is a per-device singleton");
         }// Old s_graphicsMemory[device] = this; // produced error
-        OutputDebugString(L"\nBegin: s_graphicsMemory[device] = reinterpret_cast< Line 217");
-        //s_graphicsMemory[device] = reinterpret_cast<DirectX::GraphicsMemory::Impl*>(this);
-        s_graphicsMemory[device] = this; 
-        OutputDebugString(L"\nBegin: s_graphicsMemory[device] = reinterpret_cast< Line 218");
-#endif
+        s_graphicsMemory[device] = reinterpret_cast<DirectX::GraphicsMemory::Impl*>(this);
+        //s_graphicsMemory[device] = (DirectX::GraphicsMemory::Impl*)this; 
+//#endif
     }
 
     GraphicsResource Allocate(size_t size, size_t alignment)

@@ -15,7 +15,7 @@
 
 #pragma once
 
-#include "..\Common\d3dx12.h"
+#include "Common\d3dx12.h"
 #include <d3d12.h>
 #include <memory>
 #include <vector>
@@ -32,7 +32,7 @@ namespace DirectX
         DDS_ALPHA_MODE_STRAIGHT      = 1,
         DDS_ALPHA_MODE_PREMULTIPLIED = 2,
         DDS_ALPHA_MODE_OPAQUE        = 3,
-        DDS_ALPHA_MODE_CUSTOM        = 4,
+        DDS_ALPHA_MODE_CUSTOM        = 4
     };
 
     enum DDS_LOADER_FLAGS : uint32_t
@@ -40,7 +40,7 @@ namespace DirectX
         DDS_LOADER_DEFAULT      = 0,
         DDS_LOADER_FORCE_SRGB   = 0x1,
         DDS_LOADER_MIP_AUTOGEN  = 0x4,
-        DDS_LOADER_MIP_RESERVE  = 0x8,
+        DDS_LOADER_MIP_RESERVE  = 0x8
     };
 
     // Standard version

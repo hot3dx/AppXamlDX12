@@ -123,13 +123,10 @@ const D3D12_SHADER_BYTECODE EffectBase<PBREffectTraits>::VertexShaderBytecode[] 
     { PBREffect_VSConstant, sizeof(PBREffect_VSConstant) },
     { PBREffect_VSConstantVelocity, sizeof(PBREffect_VSConstantVelocity) },
     { PBREffect_VSConstantBn, sizeof(PBREffect_VSConstantBn) },
-    { PBREffect_VSConstantVelocityBn, sizeof(PBREffect_VSConstantVelocityBn) },
+    { PBREffect_VSConstantVelocityBn, sizeof(PBREffect_VSConstantVelocityBn) }
 };
 
-
-template<>
-const int EffectBase<PBREffectTraits>::VertexShaderIndices[] =
-{
+/* The List 
     0,      // constant
     0,      // textured
     0,      // textured + emissive
@@ -141,6 +138,21 @@ const int EffectBase<PBREffectTraits>::VertexShaderIndices[] =
     2,      // textured + emissive (biased vertex normals)
     3,      // textured + velocity (biased vertex normals)
     3,      // textured + emissive + velocity (biasoed vertex normals)
+*/
+
+template<>
+const int EffectBase<PBREffectTraits>::VertexShaderIndices[] =
+{
+    0,
+    0,
+    0,
+    1,
+    1,
+    2,
+    2,
+    2,
+    3,
+    3
 };
 
 
@@ -154,10 +166,7 @@ const D3D12_SHADER_BYTECODE EffectBase<PBREffectTraits>::PixelShaderBytecode[] =
     { PBREffect_PSTexturedEmissiveVelocity, sizeof(PBREffect_PSTexturedEmissiveVelocity) }
 };
 
-
-template<>
-const int EffectBase<PBREffectTraits>::PixelShaderIndices[] =
-{
+/* The List 
     0,      // constant
     1,      // textured
     2,      // textured + emissive
@@ -169,6 +178,21 @@ const int EffectBase<PBREffectTraits>::PixelShaderIndices[] =
     2,      // textured + emissive (biased vertex normals)
     3,      // textured + velocity (biased vertex normals)
     4,      // textured + emissive + velocity (biased vertex normals)
+*/
+
+template<>
+const int EffectBase<PBREffectTraits>::PixelShaderIndices[] =
+{
+    0,
+    1,
+    2,
+    3,
+    4,
+    0,
+    1,
+    2,
+    3,
+    4
 };
 
 // Global pool of per-device PBREffect resources. Required by EffectBase<>, but not used.
@@ -210,7 +234,7 @@ PBREffect::Impl::Impl(_In_ ID3D12Device* device,
 
         if (emissive || generateVelocity)
         {
-            DebugTrace("ERROR: PBREffect does not support emissive or velocity without surface textures\n");
+            DebugTrace(L"ERROR: PBREffect does not support emissive or velocity without surface textures\n");
             throw std::invalid_argument("PBREffect");
         }
     }
@@ -236,7 +260,7 @@ PBREffect::Impl::Impl(_In_ ID3D12Device* device,
             CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 2),
             CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 3),
             CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 4),
-            CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 5),
+            CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 5)
         };
 
         CD3DX12_DESCRIPTOR_RANGE textureSampler[2] = {
@@ -266,12 +290,12 @@ PBREffect::Impl::Impl(_In_ ID3D12Device* device,
 
     if (effectFlags & EffectFlags::Fog)
     {
-        DebugTrace("ERROR: PBEffect does not implement EffectFlags::Fog\n");
+        DebugTrace(L"ERROR: PBEffect does not implement EffectFlags::Fog\n");
         throw std::invalid_argument("PBREffect");
     }
     else  if (effectFlags & EffectFlags::VertexColor)
     {
-        DebugTrace("ERROR: PBEffect does not implement EffectFlags::VertexColor\n");
+        DebugTrace(L"ERROR: PBEffect does not implement EffectFlags::VertexColor\n");
         throw std::invalid_argument("PBREffect");
     }
 
@@ -373,13 +397,13 @@ void PBREffect::Impl::Apply(_In_ ID3D12GraphicsCommandList* commandList)
 
     if (!descriptors[RadianceTexture].ptr || !descriptors[RadianceSampler].ptr)
     {
-        DebugTrace("ERROR: Missing radiance texture or sampler for PBREffect (texture %llu, sampler %llu)\n", descriptors[RadianceTexture].ptr, descriptors[RadianceSampler].ptr);
+        DebugTrace(L"ERROR: Missing radiance texture or sampler for PBREffect (texture %llu, sampler %llu)\n", descriptors[RadianceTexture].ptr, descriptors[RadianceSampler].ptr);
         throw std::exception("PBREffect");
     }
 
     if (!descriptors[IrradianceTexture].ptr)
     {
-        DebugTrace("ERROR: Missing irradiance texture for PBREffect (texture %llu)\n", descriptors[IrradianceTexture].ptr);
+        DebugTrace(L"ERROR: Missing irradiance texture for PBREffect (texture %llu)\n", descriptors[IrradianceTexture].ptr);
         throw std::exception("PBREffect");
     }
 
@@ -404,19 +428,19 @@ void PBREffect::Impl::Apply(_In_ ID3D12GraphicsCommandList* commandList)
     {
         if (!descriptors[AlbedoTexture].ptr || !descriptors[SurfaceSampler].ptr)
         {
-            DebugTrace("ERROR: Missing albedo texture or sampler for PBREffect (texture %llu, sampler %llu)\n", descriptors[AlbedoTexture].ptr, descriptors[SurfaceSampler].ptr);
+            DebugTrace(L"ERROR: Missing albedo texture or sampler for PBREffect (texture %llu, sampler %llu)\n", descriptors[AlbedoTexture].ptr, descriptors[SurfaceSampler].ptr);
             throw std::exception("PBREffect");
         }
 
         if (!descriptors[NormalTexture].ptr)
         {
-            DebugTrace("ERROR: Missing normal map texture for PBREffect (texture %llu)\n", descriptors[NormalTexture].ptr);
+            DebugTrace(L"ERROR: Missing normal map texture for PBREffect (texture %llu)\n", descriptors[NormalTexture].ptr);
             throw std::exception("PBREffect");
         }
 
         if (!descriptors[RMATexture].ptr)
         {
-            DebugTrace("ERROR: Missing roughness/metalness texture for PBREffect (texture %llu)\n", descriptors[RMATexture].ptr);
+            DebugTrace(L"ERROR: Missing roughness/metalness texture for PBREffect (texture %llu)\n", descriptors[RMATexture].ptr);
             throw std::exception("PBREffect");
         }
 
@@ -433,7 +457,7 @@ void PBREffect::Impl::Apply(_In_ ID3D12GraphicsCommandList* commandList)
         {
             if (!descriptors[EmissiveTexture].ptr)
             {
-                DebugTrace("ERROR: Missing emissive map texture for PBREffect (texture %llu)\n", descriptors[NormalTexture].ptr);
+                DebugTrace(L"ERROR: Missing emissive map texture for PBREffect (texture %llu)\n", descriptors[NormalTexture].ptr);
                 throw std::exception("PBREffect");
             }
 
@@ -636,7 +660,7 @@ void PBREffect::SetEmissiveTexture(D3D12_GPU_DESCRIPTOR_HANDLE srvDescriptor)
 {
     if (!pImpl->emissiveMap)
     {
-        DebugTrace("WARNING: Emissive texture set on PBREffect instance created without emissive shader (texture %llu)\n", srvDescriptor.ptr);
+        DebugTrace(L"WARNING: Emissive texture set on PBREffect instance created without emissive shader (texture %llu)\n", srvDescriptor.ptr);
     }
 
     pImpl->descriptors[Impl::RootParameterIndex::EmissiveTexture] = srvDescriptor;

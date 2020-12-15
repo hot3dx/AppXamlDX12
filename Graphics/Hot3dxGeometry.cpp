@@ -103,16 +103,18 @@ double XM_CALLCONV CHot3dxD3D12Geometry::distanceBetweenPointsVec(XMVECTOR v, XM
 XMVECTOR XM_CALLCONV AppXamlDX12::CHot3dxD3D12Geometry::directionBetweenPointsVec(XMVECTOR _from, XMVECTOR _to)
 {
 	
-		XMVECTOR from = XMLoadFloat3(&XMFLOAT3(XMVectorGetX(_from), XMVectorGetY(_from), XMVectorGetZ(_from)));
-		XMVECTOR to = XMLoadFloat3(&XMFLOAT3(XMVectorGetX(_to), XMVectorGetY(_from), XMVectorGetZ(_to)));
+	XMVECTOR from = //XMLoadFloat3(&XMFLOAT3(XMVectorGetX(_from), XMVectorGetY(_from), XMVectorGetZ(_from)));
+		XMVectorSet(XMVectorGetX(_from), XMVectorGetY(_from), XMVectorGetZ(_from), 0.0f);
+	XMVECTOR to = //XMLoadFloat3(&XMFLOAT3(XMVectorGetX(_to), XMVectorGetY(_from), XMVectorGetZ(_to)));
+		XMVectorSet(XMVectorGetX(_to), XMVectorGetY(_from), XMVectorGetZ(_to), 0.0f);
 		XMVECTOR result = XMVectorSubtract(to, from);
 		//v.x = (XMVectorGetX(to) - XMVectorGetX(from));
 		//v.y = (XMVectorGetY(to) - XMVectorGetY(from));
 		//v.z = (XMVectorGetZ(to) - XMVectorGetZ(from));
-		(XMVectorGetX(result), XMVectorGetY(result), XMVectorGetZ(result));
+		//(XMVectorGetX(result), XMVectorGetY(result), XMVectorGetZ(result));
 		
 	
-	return XMVECTOR(XMLoadFloat3(&XMFLOAT3(XMVectorGetX(result), XMVectorGetY(result), XMVectorGetZ(result))));
+		return result; //XMVECTOR(XMLoadFloat3(&XMFLOAT3(XMVectorGetX(result), XMVectorGetY(result), XMVectorGetZ(result))));
 }
 
 

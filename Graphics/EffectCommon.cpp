@@ -353,21 +353,21 @@ void EffectLights::EnableDefaultLighting(_In_ IEffectLights* effect)
     {
         { { { -0.5265408f, -0.5735765f, -0.6275069f, 0 } } },
         { { {  0.7198464f,  0.3420201f,  0.6040227f, 0 } } },
-        { { {  0.4545195f, -0.7660444f,  0.4545195f, 0 } } },
+        { { {  0.4545195f, -0.7660444f,  0.4545195f, 0 } } }
     };
 
     static const XMVECTORF32 defaultDiffuse[MaxDirectionalLights] =
     {
         { { { 1.0000000f, 0.9607844f, 0.8078432f, 0 } } },
         { { { 0.9647059f, 0.7607844f, 0.4078432f, 0 } } },
-        { { { 0.3231373f, 0.3607844f, 0.3937255f, 0 } } },
+        { { { 0.3231373f, 0.3607844f, 0.3937255f, 0 } } }
     };
 
     static const XMVECTORF32 defaultSpecular[MaxDirectionalLights] =
     {
         { { { 1.0000000f, 0.9607844f, 0.8078432f, 0 } } },
         { { { 0.0000000f, 0.0000000f, 0.0000000f, 0 } } },
-        { { { 0.3231373f, 0.3607844f, 0.3937255f, 0 } } },
+        { { { 0.3231373f, 0.3607844f, 0.3937255f, 0 } } }
     };
 
     static const XMVECTORF32 defaultAmbient = { { { 0.05333332f, 0.09882354f, 0.1819608f, 0 } } };

@@ -210,7 +210,7 @@ void DescriptorPile::AllocateRange(size_t numDescriptors, _Out_ IndexType& start
     // make sure we have enough room
     if (m_top > Count())
     {
-        DebugTrace("DescriptorPile has %zu of %zu descriptors; failed request for %zu more\n", start, Count(), numDescriptors);
+        DebugTrace(L"DescriptorPile has %zu of %zu descriptors; failed request for %zu more\n", start, Count(), numDescriptors);
         throw std::exception("Can't allocate more descriptors");
     }
 }

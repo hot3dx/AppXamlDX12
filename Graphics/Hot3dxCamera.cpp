@@ -30,7 +30,7 @@ Hot3dxCamera::Hot3dxCamera()
         );
 
     // Setup the projection matrix.
-    SetProjParams(70.0f * XM_PI / 180.0f, 1.0f, 0.01f, 100.0f);
+    SetProjParams(70.0f * XM_PI / 180.0f, 1.0f, 0.01f, 1000.0f);
 }
 
 //--------------------------------------------------------------------------------------
@@ -231,4 +231,35 @@ float Hot3dxCamera::Yaw()
     return m_cameraYawAngle;
 }
 
+void Hot3dxCamera::RotateYaw(float deg)
+{
+    XMMATRIX rotation = XMMatrixRotationAxis(XMVectorSet(m_up.x, m_up.y, m_up.z, 0.0f), deg);
+
+    XMVECTOR eye = XMVector3TransformCoord(XMVectorSet(m_eye.x, m_eye.y, m_eye.z, 0.0f), rotation);
+    m_eye = { XMVectorGetX(eye), XMVectorGetY(eye), XMVectorGetZ(eye) };
+}
+
+void Hot3dxCamera::RotatePitch(float deg)
+{
+    XMVECTOR right = XMVector3Normalize(XMVector3Cross(XMVectorSet(m_eye.x, m_eye.y, m_eye.z, 0.0f), 
+        XMVectorSet(m_up.x, m_up.y, m_up.z, 0.0f)));
+    XMMATRIX rotation = XMMatrixRotationAxis(right, deg);
+    
+    XMVECTOR eye = XMVector3TransformCoord(XMVectorSet(m_eye.x, m_eye.y, m_eye.z, 0.0f), rotation);
+    m_eye = { XMVectorGetX(eye), XMVectorGetY(eye), XMVectorGetZ(eye) };
+}
+
+void Hot3dxCamera::Reset()
+{
+    m_eye = { 0.0f, 0.0f, -20.0f};
+    m_lookAt = { 0.0f, 0.01f, 0.0f};
+    m_up = { 0.0f, 1.0f, 0.0f};
+}
+
+void Hot3dxCamera::Set(XMFLOAT3 eye, XMFLOAT3 at, XMFLOAT3 up)
+{
+    m_eye = eye;
+    m_lookAt = at;
+    m_up = up;
+}
 //--------------------------------------------------------------------------------------

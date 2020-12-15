@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "..\Common\d3dx12.h"
+#include "Common\d3dx12.h"
 #include <d3d12.h>
 #include <stdint.h>
 #include <memory>
@@ -33,7 +33,7 @@ namespace DirectX
         WIC_LOADER_FORCE_SRGB   = 0x1,
         WIC_LOADER_IGNORE_SRGB  = 0x2,
         WIC_LOADER_MIP_AUTOGEN  = 0x4,
-        WIC_LOADER_MIP_RESERVE  = 0x8,
+        WIC_LOADER_MIP_RESERVE  = 0x8
     };
 
     class ResourceUploadBatch;

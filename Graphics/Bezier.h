@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include "..\Common\d3dx12.h"
+#include "Common\d3dx12.h"
 #include <array>
 #include <algorithm>
 #include <DirectXMath.h>

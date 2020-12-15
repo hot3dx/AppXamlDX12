@@ -38,6 +38,11 @@ internal:
     float Pitch();
     float Yaw();
 
+    void RotateYaw(float deg);
+    void RotatePitch(float deg);
+    void Reset();
+    void Set(XMFLOAT3 eye, XMFLOAT3 at, XMFLOAT3 up);
+
 protected private:
     DirectX::XMFLOAT4X4 m_viewMatrix;
     DirectX::XMFLOAT4X4 m_projectionMatrix;

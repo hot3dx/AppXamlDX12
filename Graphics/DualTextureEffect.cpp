@@ -96,18 +96,24 @@ const D3D12_SHADER_BYTECODE EffectBase<DualTextureEffectTraits>::VertexShaderByt
     { DualTextureEffect_VSDualTexture,        sizeof(DualTextureEffect_VSDualTexture)        },
     { DualTextureEffect_VSDualTextureNoFog,   sizeof(DualTextureEffect_VSDualTextureNoFog)   },
     { DualTextureEffect_VSDualTextureVc,      sizeof(DualTextureEffect_VSDualTextureVc)      },
-    { DualTextureEffect_VSDualTextureVcNoFog, sizeof(DualTextureEffect_VSDualTextureVcNoFog) },
+    { DualTextureEffect_VSDualTextureVcNoFog, sizeof(DualTextureEffect_VSDualTextureVcNoFog) }
 
 };
 
-
-template<>
-const int EffectBase<DualTextureEffectTraits>::VertexShaderIndices[] =
-{
+/* The List 
     0,      // basic
     1,      // no fog
     2,      // vertex color
     3,      // vertex color, no fog
+*/
+
+template<>
+const int EffectBase<DualTextureEffectTraits>::VertexShaderIndices[] =
+{
+    0,
+    1,
+    2,
+    3
 };
 
 
@@ -115,18 +121,23 @@ template<>
 const D3D12_SHADER_BYTECODE EffectBase<DualTextureEffectTraits>::PixelShaderBytecode[] =
 {
     { DualTextureEffect_PSDualTexture,        sizeof(DualTextureEffect_PSDualTexture)        },
-    { DualTextureEffect_PSDualTextureNoFog,   sizeof(DualTextureEffect_PSDualTextureNoFog)   },
+    { DualTextureEffect_PSDualTextureNoFog,   sizeof(DualTextureEffect_PSDualTextureNoFog)   }
 
 };
 
-
-template<>
-const int EffectBase<DualTextureEffectTraits>::PixelShaderIndices[] =
-{
+/* The List 
     0,      // basic
     1,      // no fog
     0,      // vertex color
     1,      // vertex color, no fog
+*/
+template<>
+const int EffectBase<DualTextureEffectTraits>::PixelShaderIndices[] =
+{
+    0,
+    1,
+    0,
+    1
 };
 
 
@@ -185,12 +196,12 @@ DualTextureEffect::Impl::Impl(_In_ ID3D12Device* device, int effectFlags, const 
 
     if (effectFlags & EffectFlags::PerPixelLightingBit)
     {
-        DebugTrace("ERROR: DualTextureEffect does not implement EffectFlags::PerPixelLighting\n");
+        DebugTrace(L"ERROR: DualTextureEffect does not implement EffectFlags::PerPixelLighting\n");
         throw std::invalid_argument("DualTextureEffect");
     }
     else if (effectFlags & EffectFlags::Lighting)
     {
-        DebugTrace("ERROR: DualTextureEffect does not implement EffectFlags::Lighting\n");
+        DebugTrace(L"ERROR: DualTextureEffect does not implement EffectFlags::Lighting\n");
         throw std::invalid_argument("DualTextureEffect");
     }
 
@@ -256,12 +267,12 @@ void DualTextureEffect::Impl::Apply(_In_ ID3D12GraphicsCommandList* commandList)
     // Set the textures
     if (!texture1.ptr || !texture2.ptr)
     {
-        DebugTrace("ERROR: Missing texture(s) for DualTextureEffect (texture1 %llu, texture2 %llu)\n", texture1.ptr, texture2.ptr);
+        DebugTrace(L"ERROR: Missing texture(s) for DualTextureEffect (texture1 %llu, texture2 %llu)\n", texture1.ptr, texture2.ptr);
         throw std::exception("DualTextureEffect");
     }
     if (!texture1Sampler.ptr || !texture2Sampler.ptr)
     {
-        DebugTrace("ERROR: Missing sampler(s) for DualTextureEffect (samplers1 %llu, samplers2 %llu)\n", texture2Sampler.ptr, texture2Sampler.ptr);
+        DebugTrace(L"ERROR: Missing sampler(s) for DualTextureEffect (samplers1 %llu, samplers2 %llu)\n", texture2Sampler.ptr, texture2Sampler.ptr);
         throw std::exception("DualTextureEffect");
     }
 

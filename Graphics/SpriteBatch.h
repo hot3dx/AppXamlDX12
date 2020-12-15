@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "..\Common\d3dx12.h"
+#include "Common\d3dx12.h"
 #include <d3d12.h>
 
 
@@ -31,7 +31,7 @@ namespace DirectX
         SpriteSortMode_Immediate,
         SpriteSortMode_Texture,
         SpriteSortMode_BackToFront,
-        SpriteSortMode_FrontToBack,
+        SpriteSortMode_FrontToBack
     };
 
     enum SpriteEffects : uint32_t
@@ -39,7 +39,7 @@ namespace DirectX
         SpriteEffects_None = 0,
         SpriteEffects_FlipHorizontally = 1,
         SpriteEffects_FlipVertically = 2,
-        SpriteEffects_FlipBoth = SpriteEffects_FlipHorizontally | SpriteEffects_FlipVertically,
+        SpriteEffects_FlipBoth = SpriteEffects_FlipHorizontally | SpriteEffects_FlipVertically
     };
 
     class SpriteBatchPipelineStateDescription

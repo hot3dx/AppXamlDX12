@@ -130,13 +130,10 @@ const D3D12_SHADER_BYTECODE EffectBase<NormalMapEffectTraits>::VertexShaderBytec
     { NormalMapEffect_VSNormalPixelLightingTxVcNoSpec,   sizeof(NormalMapEffect_VSNormalPixelLightingTxVcNoSpec)   },
 
     { NormalMapEffect_VSNormalPixelLightingTxNoSpecBn,   sizeof(NormalMapEffect_VSNormalPixelLightingTxNoSpecBn)   },
-    { NormalMapEffect_VSNormalPixelLightingTxVcNoSpecBn, sizeof(NormalMapEffect_VSNormalPixelLightingTxVcNoSpecBn) },
+    { NormalMapEffect_VSNormalPixelLightingTxVcNoSpecBn, sizeof(NormalMapEffect_VSNormalPixelLightingTxVcNoSpecBn) }
 };
 
-
-template<>
-const int EffectBase<NormalMapEffectTraits>::VertexShaderIndices[] =
-{
+/* The List 
     0,     // pixel lighting + texture
     0,     // pixel lighting + texture, no fog
     1,     // pixel lighting + texture + vertex color
@@ -156,6 +153,28 @@ const int EffectBase<NormalMapEffectTraits>::VertexShaderIndices[] =
     6,     // pixel lighting (biased vertex normal) + texture, no fog or specular
     7,     // pixel lighting (biased vertex normal) + texture + vertex color, no specular
     7,     // pixel lighting (biased vertex normal) + texture + vertex color, no fog or specular
+*/
+
+template<>
+const int EffectBase<NormalMapEffectTraits>::VertexShaderIndices[] =
+{
+    0,
+    0,
+    1,
+    1,
+
+    4,
+    4,
+    5,
+    5,
+    2,
+    2,
+    3,
+    3,
+    6,
+    6,
+    7,
+    7
 };
 
 
@@ -165,13 +184,10 @@ const D3D12_SHADER_BYTECODE EffectBase<NormalMapEffectTraits>::PixelShaderByteco
     { NormalMapEffect_PSNormalPixelLightingTx,          sizeof(NormalMapEffect_PSNormalPixelLightingTx)          },
     { NormalMapEffect_PSNormalPixelLightingTxNoFog,     sizeof(NormalMapEffect_PSNormalPixelLightingTxNoFog)     },
     { NormalMapEffect_PSNormalPixelLightingTxNoSpec,    sizeof(NormalMapEffect_PSNormalPixelLightingTxNoSpec)    },
-    { NormalMapEffect_PSNormalPixelLightingTxNoFogSpec, sizeof(NormalMapEffect_PSNormalPixelLightingTxNoFogSpec) },
+    { NormalMapEffect_PSNormalPixelLightingTxNoFogSpec, sizeof(NormalMapEffect_PSNormalPixelLightingTxNoFogSpec) }
 };
 
-
-template<>
-const int EffectBase<NormalMapEffectTraits>::PixelShaderIndices[] =
-{
+/* The List 
     0,      // pixel lighting + texture
     1,      // pixel lighting + texture, no fog
     0,      // pixel lighting + texture + vertex color
@@ -191,6 +207,27 @@ const int EffectBase<NormalMapEffectTraits>::PixelShaderIndices[] =
     3,     // pixel lighting (biased vertex normal) + texture, no fog or specular
     2,     // pixel lighting (biased vertex normal) + texture + vertex color, no specular
     3,     // pixel lighting (biased vertex normal) + texture + vertex color, no fog or specular
+*/
+
+template<>
+const int EffectBase<NormalMapEffectTraits>::PixelShaderIndices[] =
+{
+    0,
+    1,
+    0,
+    1,
+    2,
+    3,
+    2,
+    3,
+    0,
+    1,
+    0,
+    1,
+    2,
+    3,
+    2,
+    3
 };
 
 // Global pool of per-device NormalMapEffect resources.
@@ -329,7 +366,7 @@ void NormalMapEffect::Impl::Apply(_In_ ID3D12GraphicsCommandList* commandList)
     // Set the texture
     if (!texture.ptr || !sampler.ptr || !normal.ptr)
     {
-        DebugTrace("ERROR: Missing texture(s) or sampler for NormalMapEffect (texture %llu, normal %llu, sampler %llu)\n", texture.ptr, normal.ptr, sampler.ptr);
+        DebugTrace(L"ERROR: Missing texture(s) or sampler for NormalMapEffect (texture %llu, normal %llu, sampler %llu)\n", texture.ptr, normal.ptr, sampler.ptr);
         throw std::exception("NormalMapEffect");
     }
 
@@ -342,7 +379,7 @@ void NormalMapEffect::Impl::Apply(_In_ ID3D12GraphicsCommandList* commandList)
     {
         if (!specular.ptr)
         {
-            DebugTrace("ERROR: Missing specular texure NormalMapEffect (texture %llu)\n", specular.ptr);
+            DebugTrace(L"ERROR: Missing specular texure NormalMapEffect (texture %llu)\n", specular.ptr);
             throw std::exception("NormalMapEffect");
         }
         commandList->SetGraphicsRootDescriptorTable(RootParameterIndex::TextureSpecularSRV, specular);
@@ -575,7 +612,7 @@ void NormalMapEffect::SetSpecularTexture(D3D12_GPU_DESCRIPTOR_HANDLE srvDescript
 {
     if (!pImpl->specularMap)
     {
-        DebugTrace("WARNING: Specular texture set on NormalMapEffect instance created without specular shader (texture %llu)\n", srvDescriptor.ptr);
+        DebugTrace(L"WARNING: Specular texture set on NormalMapEffect instance created without specular shader (texture %llu)\n", srvDescriptor.ptr);
     }
 
     pImpl->specular = srvDescriptor;

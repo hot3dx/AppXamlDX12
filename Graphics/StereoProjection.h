@@ -28,7 +28,7 @@ typedef enum class STEREO_CHANNEL
 typedef enum class STEREO_MODE
 {
     NORMAL = 0,
-    INVERTED,
+    INVERTED
 } STEREO_MODE;
 
 void StereoCreateDefaultParameters(_Out_ STEREO_PARAMETERS* pStereoParameters);

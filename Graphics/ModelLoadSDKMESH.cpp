@@ -74,7 +74,7 @@ namespace
 
         if ((flags & DUAL_TEXTURE) && !mh.SpecularTexture[0])
         {
-            DebugTrace("WARNING: Material '%s' has multiple texture coords but not multiple textures\n", mh.Name);
+            DebugTrace(L"WARNING: Material '%s' has multiple texture coords but not multiple textures\n", mh.Name);
             flags &= ~static_cast<unsigned int>(DUAL_TEXTURE);
         }
 
@@ -88,7 +88,7 @@ namespace
         }
         else if (mh.NormalTexture[0])
         {
-            DebugTrace("WARNING: Material '%s' has a normal map, but vertex buffer is missing tangents\n", mh.Name);
+            DebugTrace(L"WARNING: Material '%s' has a normal map, but vertex buffer is missing tangents\n", mh.Name);
             *normalName = 0;
         }
 
@@ -192,7 +192,7 @@ namespace
            { "BINORMAL",     0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
            { "TEXCOORD",     0, DXGI_FORMAT_R32G32_FLOAT,    0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
            { "BLENDINDICES", 0, DXGI_FORMAT_R8G8B8A8_UINT,   0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-           { "BLENDWEIGHT",  0, DXGI_FORMAT_R8G8B8A8_UNORM,  0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+           { "BLENDWEIGHT",  0, DXGI_FORMAT_R8G8B8A8_UNORM,  0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
         };
 
         using namespace DXUT;
@@ -497,7 +497,7 @@ std::unique_ptr<Model> DirectX::Model::CreateFromSDKMESH(const uint8_t* meshData
 
     if (dec3nwarning)
     {
-        DebugTrace("WARNING: Vertex declaration uses legacy Direct3D 9 D3DDECLTYPE_DEC3N which has no DXGI equivalent\n"
+        DebugTrace(L"WARNING: Vertex declaration uses legacy Direct3D 9 D3DDECLTYPE_DEC3N which has no DXGI equivalent\n"
                    "         (treating as DXGI_FORMAT_R10G10B10A2_UNORM which is not a signed format)\n");
     }
 
@@ -678,7 +678,7 @@ std::unique_ptr<Model> DirectX::Model::CreateFromSDKMESH(const wchar_t* szFileNa
     HRESULT hr = BinaryReader::ReadEntireFile(szFileName, data, &dataSize);
     if (FAILED(hr))
     {
-        DebugTrace("ERROR: CreateFromSDKMESH failed (%08X) loading '%ls'\n", hr, szFileName);
+        DebugTrace(L"ERROR: CreateFromSDKMESH failed (%08X) loading '%ls'\n", hr, szFileName);
         throw std::exception("CreateFromSDKMESH");
     }
 

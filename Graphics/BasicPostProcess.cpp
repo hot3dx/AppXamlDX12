@@ -82,7 +82,7 @@ namespace
     const D3D12_SHADER_BYTECODE vertexShader[] =
     {
         { PostProcess_VSQuadNoCB,               sizeof(PostProcess_VSQuadNoCB) },
-        { PostProcess_VSQuad,                   sizeof(PostProcess_VSQuad) },
+        { PostProcess_VSQuad,                   sizeof(PostProcess_VSQuad) }
     };
 
     const D3D12_SHADER_BYTECODE pixelShaders[] =
@@ -94,7 +94,7 @@ namespace
         { PostProcess_PSDownScale4x4,           sizeof(PostProcess_PSDownScale4x4) },
         { PostProcess_PSGaussianBlur5x5,        sizeof(PostProcess_PSGaussianBlur5x5) },
         { PostProcess_PSBloomExtract,           sizeof(PostProcess_PSBloomExtract) },
-        { PostProcess_PSBloomBlur,              sizeof(PostProcess_PSBloomBlur) },
+        { PostProcess_PSBloomBlur,              sizeof(PostProcess_PSBloomBlur) }
     };
 
     static_assert(_countof(pixelShaders) == BasicPostProcess::Effect_Max, "array/max mismatch");
@@ -303,7 +303,7 @@ void BasicPostProcess::Impl::Process(_In_ ID3D12GraphicsCommandList* commandList
     // Set the texture.
     if (!texture.ptr)
     {
-        DebugTrace("ERROR: Missing texture for BasicPostProcess (texture %llu)\n", texture.ptr);
+        DebugTrace(L"ERROR: Missing texture for BasicPostProcess (texture %llu)\n", texture.ptr);
         throw std::exception("BasicPostProcess");
     }
     commandList->SetGraphicsRootDescriptorTable(RootParameterIndex::TextureSRV, texture);

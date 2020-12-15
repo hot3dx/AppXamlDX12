@@ -97,24 +97,23 @@ namespace
         { ToneMap_PSSaturate_SRGB,          sizeof(ToneMap_PSSaturate_SRGB) },
         { ToneMap_PSReinhard_SRGB,          sizeof(ToneMap_PSReinhard_SRGB) },
         { ToneMap_PSACESFilmic_SRGB,        sizeof(ToneMap_PSACESFilmic_SRGB) },
-        { ToneMap_PSHDR10,                  sizeof(ToneMap_PSHDR10) },
+        { ToneMap_PSHDR10,                  sizeof(ToneMap_PSHDR10) }
 
 #if defined(_XBOX_ONE) && defined(_TITLE)
         // Shaders that generate both HDR10 and GameDVR SDR signals via Multiple Render Targets.
-        { ToneMap_PSHDR10_Saturate,         sizeof(ToneMap_PSHDR10_Saturate) },
+        ,{ ToneMap_PSHDR10_Saturate,         sizeof(ToneMap_PSHDR10_Saturate) },
         { ToneMap_PSHDR10_Reinhard,         sizeof(ToneMap_PSHDR10_Reinhard) },
         { ToneMap_PSHDR10_ACESFilmic,       sizeof(ToneMap_PSHDR10_ACESFilmic) },
         { ToneMap_PSHDR10_Saturate_SRGB,    sizeof(ToneMap_PSHDR10_Saturate_SRGB) },
         { ToneMap_PSHDR10_Reinhard_SRGB,    sizeof(ToneMap_PSHDR10_Reinhard_SRGB) },
-        { ToneMap_PSHDR10_ACESFilmic_SRGB,  sizeof(ToneMap_PSHDR10_ACESFilmic_SRGB) },
+        { ToneMap_PSHDR10_ACESFilmic_SRGB,  sizeof(ToneMap_PSHDR10_ACESFilmic_SRGB) }
 #endif
     };
 
     static_assert(_countof(pixelShaders) == PixelShaderCount, "array/max mismatch");
 
-    const int pixelShaderIndices[] =
-    {
-        // Linear EOTF
+    /* The List 
+    // Linear EOTF
         0,  // Copy
         1,  // Saturate
         2,  // Reinhard
@@ -150,6 +149,39 @@ namespace
         9,  // HDR10+Saturate
         10, // HDR10+Reinhard
         11, // HDR10+ACESFilmic
+        #endif
+    */
+
+    const int pixelShaderIndices[] =
+    {
+        // Linear EOTF
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        8,
+        8,
+        8
+
+#if defined(_XBOX_ONE) && defined(_TITLE)
+        
+        ,9,
+        9,
+        10,
+        11,
+        12,
+        12,
+        13,
+        14,
+        9,
+        9,
+        10,
+        11
 #endif
     };
 
@@ -332,7 +364,7 @@ void ToneMapPostProcess::Impl::Process(_In_ ID3D12GraphicsCommandList* commandLi
     // Set the texture.
     if (!texture.ptr)
     {
-        DebugTrace("ERROR: Missing texture for ToneMapPostProcess (texture %llu)\n", texture.ptr);
+        DebugTrace(L"ERROR: Missing texture for ToneMapPostProcess (texture %llu)\n", texture.ptr);
         throw std::exception("ToneMapPostProcess");
     }
     commandList->SetGraphicsRootDescriptorTable(RootParameterIndex::TextureSRV, texture);

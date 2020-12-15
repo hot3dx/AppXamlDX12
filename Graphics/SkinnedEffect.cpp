@@ -140,13 +140,10 @@ const D3D12_SHADER_BYTECODE EffectBase<SkinnedEffectTraits>::VertexShaderBytecod
 
     { SkinnedEffect_VSSkinnedPixelLightingOneBoneBn,    sizeof(SkinnedEffect_VSSkinnedPixelLightingOneBoneBn)    },
     { SkinnedEffect_VSSkinnedPixelLightingTwoBonesBn,   sizeof(SkinnedEffect_VSSkinnedPixelLightingTwoBonesBn)   },
-    { SkinnedEffect_VSSkinnedPixelLightingFourBonesBn,  sizeof(SkinnedEffect_VSSkinnedPixelLightingFourBonesBn)  },
+    { SkinnedEffect_VSSkinnedPixelLightingFourBonesBn,  sizeof(SkinnedEffect_VSSkinnedPixelLightingFourBonesBn)  }
 };
 
-
-template<>
-const int EffectBase<SkinnedEffectTraits>::VertexShaderIndices[] =
-{
+/* The List 
     0,      // vertex lighting, one bone
     0,      // vertex lighting, one bone, no fog
     1,      // vertex lighting, two bones
@@ -174,6 +171,35 @@ const int EffectBase<SkinnedEffectTraits>::VertexShaderIndices[] =
     10,     // pixel lighting (biased vertex normals), two bones, no fog
     11,     // pixel lighting (biased vertex normals), four bones
     11,     // pixel lighting (biased vertex normals), four bones, no fog
+*/
+
+template<>
+const int EffectBase<SkinnedEffectTraits>::VertexShaderIndices[] =
+{
+    0,
+    0,
+    1,
+    1,
+    2,
+    2,
+    3,
+    3,
+    4,
+    4,
+    5,
+    5,
+    6,
+    6,
+    7,
+    7,
+    8,
+    8,
+    9,
+    9,
+    10,
+    10,
+    11,
+    11
 };
 
 
@@ -182,13 +208,10 @@ const D3D12_SHADER_BYTECODE EffectBase<SkinnedEffectTraits>::PixelShaderBytecode
 {
     { SkinnedEffect_PSSkinnedVertexLighting,      sizeof(SkinnedEffect_PSSkinnedVertexLighting)      },
     { SkinnedEffect_PSSkinnedVertexLightingNoFog, sizeof(SkinnedEffect_PSSkinnedVertexLightingNoFog) },
-    { SkinnedEffect_PSSkinnedPixelLighting,       sizeof(SkinnedEffect_PSSkinnedPixelLighting)       },
+    { SkinnedEffect_PSSkinnedPixelLighting,       sizeof(SkinnedEffect_PSSkinnedPixelLighting)       }
 };
 
-
-template<>
-const int EffectBase<SkinnedEffectTraits>::PixelShaderIndices[] =
-{
+/* The List 
     0,      // vertex lighting, one bone
     1,      // vertex lighting, one bone, no fog
     0,      // vertex lighting, two bones
@@ -216,6 +239,35 @@ const int EffectBase<SkinnedEffectTraits>::PixelShaderIndices[] =
     2,      // pixel lighting (biased vertex normals), two bones, no fog
     2,      // pixel lighting (biased vertex normals), four bones
     2,      // pixel lighting (biased vertex normals), four bones, no fog
+*/
+
+template<>
+const int EffectBase<SkinnedEffectTraits>::PixelShaderIndices[] =
+{
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
 };
 
 
@@ -239,7 +291,7 @@ SkinnedEffect::Impl::Impl(_In_ ID3D12Device* device, int effectFlags, const Effe
         (weightsPerVertex != 2) &&
         (weightsPerVertex != 4))
     {
-        DebugTrace("ERROR: SkinnedEffect's weightsPerVertex parameter must be 1, 2, or 4");
+        DebugTrace(L"ERROR: SkinnedEffect's weightsPerVertex parameter must be 1, 2, or 4");
         throw std::out_of_range("weightsPerVertex must be 1, 2, or 4");
     }
 
@@ -280,7 +332,7 @@ SkinnedEffect::Impl::Impl(_In_ ID3D12Device* device, int effectFlags, const Effe
 
     if (effectFlags & EffectFlags::VertexColor)
     {
-        DebugTrace("ERROR: SkinnedEffect does not implement EffectFlags::VertexColor\n");
+        DebugTrace(L"ERROR: SkinnedEffect does not implement EffectFlags::VertexColor\n");
         throw std::invalid_argument("SkinnedEffect");
     }
 
@@ -362,7 +414,7 @@ void SkinnedEffect::Impl::Apply(_In_ ID3D12GraphicsCommandList* commandList)
     // Set the texture
     if (!texture.ptr || !sampler.ptr)
     {
-        DebugTrace("ERROR: Missing texture or sampler for SkinnedEffect (texture %llu, sampler %llu)\n", texture.ptr, sampler.ptr);
+        DebugTrace(L"ERROR: Missing texture or sampler for SkinnedEffect (texture %llu, sampler %llu)\n", texture.ptr, sampler.ptr);
         throw std::exception("SkinnedEffect");
     }
 

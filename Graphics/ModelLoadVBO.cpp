@@ -124,7 +124,7 @@ std::unique_ptr<Model> DirectX::Model::CreateFromVBO(const wchar_t* szFileName, 
     HRESULT hr = BinaryReader::ReadEntireFile(szFileName, data, &dataSize);
     if (FAILED(hr))
     {
-        DebugTrace("ERROR: CreateFromVBO failed (%08X) loading '%ls'\n", hr, szFileName);
+        DebugTrace(L"ERROR: CreateFromVBO failed (%08X) loading '%ls'\n", hr, szFileName);
         throw std::exception("CreateFromVBO");
     }
 

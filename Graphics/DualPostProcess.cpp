@@ -63,7 +63,7 @@ namespace
     const D3D12_SHADER_BYTECODE pixelShaders[] =
     {
         { PostProcess_PSMerge,          sizeof(PostProcess_PSMerge) },
-        { PostProcess_PSBloomCombine,   sizeof(PostProcess_PSBloomCombine) },
+        { PostProcess_PSBloomCombine,   sizeof(PostProcess_PSBloomCombine) }
     };
 
     static_assert(_countof(pixelShaders) == DualPostProcess::Effect_Max, "array/max mismatch");
@@ -240,7 +240,7 @@ void DualPostProcess::Impl::Process(_In_ ID3D12GraphicsCommandList* commandList)
     // Set the texture.
     if (!texture.ptr || !texture2.ptr)
     {
-        DebugTrace("ERROR: Missing texture(s) for DualPostProcess (%llu, %llu)\n", texture.ptr, texture2.ptr);
+        DebugTrace(L"ERROR: Missing texture(s) for DualPostProcess (%llu, %llu)\n", texture.ptr, texture2.ptr);
         throw std::exception("DualPostProcess");
     }
     commandList->SetGraphicsRootDescriptorTable(RootParameterIndex::TextureSRV, texture);

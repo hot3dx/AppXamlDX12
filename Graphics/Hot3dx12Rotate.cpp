@@ -23,6 +23,7 @@ AppXamlDX12::Hot3dx12Rotate::Hot3dx12Rotate()
 
 double AppXamlDX12::Hot3dx12Rotate::DegreesToRadians(double degree)
 {
+	m_fCamMove_degreeradian = degree;
 	m_fCamMove_camerarotation = m_fCamMove_anglerotation * m_fCamMove_degreeradian;
 	return m_fCamMove_camerarotation;
 }
@@ -58,7 +59,7 @@ float* AppXamlDX12::Hot3dx12Rotate::CalculateMeshBoxAndCenterCV(CUSTOMVERTEX* v,
 	box[8] = box[4] + ((box[5] - box[4]) / 2);
 
 	wchar_t mybox[200] = {};
-	swprintf(mybox, 200, L"\n box center x: %f y: %f z: %f\n", box[6], box[7], box[8]);
+	StringCbPrintf(mybox, 200, L"\n box center x: %f y: %f z: %f\n", box[6], box[7], box[8]);
 	OutputDebugString(mybox);
 	return box;
 
@@ -445,7 +446,7 @@ AppXamlDX12::CUSTOMVERTEX* AppXamlDX12::Hot3dx12Rotate::CalculateSphereCV(CUSTOM
 	return NULL;
 }
 
-VertexPositionColor* AppXamlDX12::Hot3dx12Rotate::CalculateSphereVPC(VertexPositionColor* v, int* n, DWORD dwcolor)
+DirectX::VertexPositionColor* AppXamlDX12::Hot3dx12Rotate::CalculateSphereVPC(DirectX::VertexPositionColor* v, int* n, DWORD dwcolor)
 {
 
 	// all points on sphere at origin
@@ -504,7 +505,7 @@ VertexPositionColor* AppXamlDX12::Hot3dx12Rotate::CalculateSphereVPC(VertexPosit
 			if (m_bArrayInit == true) {}
 
 			///////////////////////////////////////
-			v = (VertexPositionColor*)malloc((cnt + 2) * sizeof(VertexPositionColor));
+			v = (DirectX::VertexPositionColor*)malloc((cnt + 2) * sizeof(DirectX::VertexPositionColor));
 			if (v != NULL)
 			{
 				m_bArrayInit = true;
@@ -577,12 +578,16 @@ VertexPositionColor* AppXamlDX12::Hot3dx12Rotate::CalculateSphereVPC(VertexPosit
 
 void AppXamlDX12::Hot3dx12Rotate::MoveRotateCameraXY(int direction)
 {
-	throw ref new Platform::NotImplementedException();
+	m_fCamMove_cameradirection = (float)direction;
+	//throw ref new Platform::NotImplementedException();
 }
 
 void AppXamlDX12::Hot3dx12Rotate::MoveRotateCameraAny(float x, float y, float z)
 {
-	throw ref new Platform::NotImplementedException();
+	m_fCamMove_px = (double*)&x;
+	m_fCamMove_py = (double*)&y;
+	m_fCamMove_pz = (double*)&z;
+	//throw ref new Platform::NotImplementedException();
 }
 
 float AppXamlDX12::Hot3dx12Rotate::yCoordofXRot3(float y, float z, float radAngle) {

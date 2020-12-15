@@ -75,12 +75,12 @@ std::shared_ptr<IEffect> PBREffectFactory::Impl::CreateEffect(
 {
     if (!mTextureDescriptors)
     {
-        DebugTrace("ERROR: PBREffectFactory created without texture descriptor heap!\n");
+        DebugTrace(L"ERROR: PBREffectFactory created without texture descriptor heap!\n");
         throw std::exception("PBREffectFactory");
     }
     if (!mSamplerDescriptors)
     {
-        DebugTrace("ERROR: PBREffectFactory created without sampler descriptor heap!\n");
+        DebugTrace(L"ERROR: PBREffectFactory created without sampler descriptor heap!\n");
         throw std::exception("PBREffectFactory");
     }
 

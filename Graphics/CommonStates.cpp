@@ -9,7 +9,7 @@
 
 #include "pch.h"
 #include "CommonStates.h"
-#include "..\Common\DirectXHelper.h"
+#include "Common\DirectXHelper.h"
 #include "DirectXHelpers.h"
 #include "DescriptorHeap.h"
 
@@ -247,7 +247,7 @@ const D3D12_STATIC_SAMPLER_DESC CommonStates::StaticPointWrap(unsigned int shade
         FLT_MAX, // MaxLOD
         0, // ShaderRegister
         0, // RegisterSpace
-        D3D12_SHADER_VISIBILITY_ALL,
+        D3D12_SHADER_VISIBILITY_ALL
     };
 
     D3D12_STATIC_SAMPLER_DESC desc = s_desc;
@@ -272,7 +272,7 @@ const D3D12_STATIC_SAMPLER_DESC CommonStates::StaticPointClamp(unsigned int shad
         FLT_MAX, // MaxLOD
         0, // ShaderRegister
         0, // RegisterSpace
-        D3D12_SHADER_VISIBILITY_ALL,
+        D3D12_SHADER_VISIBILITY_ALL
     };
 
     D3D12_STATIC_SAMPLER_DESC desc = s_desc;
@@ -296,7 +296,7 @@ const D3D12_STATIC_SAMPLER_DESC CommonStates::StaticLinearWrap(unsigned int shad
         FLT_MAX, // MaxLOD
         0, // ShaderRegister
         0, // RegisterSpace
-        D3D12_SHADER_VISIBILITY_ALL,
+        D3D12_SHADER_VISIBILITY_ALL
     };
 
     D3D12_STATIC_SAMPLER_DESC desc = s_desc;
@@ -321,7 +321,7 @@ const D3D12_STATIC_SAMPLER_DESC CommonStates::StaticLinearClamp(unsigned int sha
         FLT_MAX, // MaxLOD
         0, // ShaderRegister
         0, // RegisterSpace
-        D3D12_SHADER_VISIBILITY_ALL,
+        D3D12_SHADER_VISIBILITY_ALL
     };
 
     D3D12_STATIC_SAMPLER_DESC desc = s_desc;
@@ -346,7 +346,7 @@ const D3D12_STATIC_SAMPLER_DESC CommonStates::StaticAnisotropicWrap(unsigned int
         FLT_MAX, // MaxLOD
         0, // ShaderRegister
         0, // RegisterSpace
-        D3D12_SHADER_VISIBILITY_ALL,
+        D3D12_SHADER_VISIBILITY_ALL
     };
 
     D3D12_STATIC_SAMPLER_DESC desc = s_desc;
@@ -371,7 +371,7 @@ const D3D12_STATIC_SAMPLER_DESC CommonStates::StaticAnisotropicClamp(unsigned in
         FLT_MAX, // MaxLOD
         0, // ShaderRegister
         0, // RegisterSpace
-        D3D12_SHADER_VISIBILITY_ALL,
+        D3D12_SHADER_VISIBILITY_ALL
     };
 
     D3D12_STATIC_SAMPLER_DESC desc = s_desc;

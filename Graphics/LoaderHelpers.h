@@ -12,7 +12,7 @@
 
 #pragma once
 
-#include "..\Common\d3dx12.h"
+#include "Common\d3dx12.h"
 #include <d3d12.h>
 #include "DDS.h"
 #include "DDSTextureLoader.h"

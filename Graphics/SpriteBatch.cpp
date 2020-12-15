@@ -906,7 +906,7 @@ void XM_CALLCONV SpriteBatch::Impl::RenderSprite(SpriteInfo const* sprite, Verte
         { { { 0, 0, 0, 0 } } },
         { { { 1, 0, 0, 0 } } },
         { { { 0, 1, 0, 0 } } },
-        { { { 1, 1, 0, 0 } } },
+        { { { 1, 1, 0, 0 } } }
     };
 
     // Tricksy alert! Texture coordinates are computed from the same cornerOffsets

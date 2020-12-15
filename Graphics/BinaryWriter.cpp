@@ -25,7 +25,7 @@ BinaryWriter::BinaryWriter(_In_z_ wchar_t const* fileName) :
     HRESULT hr = WriteEntireFile(fileName, mOwnedData, &dataSize);
     if (FAILED(hr))
     {
-        DebugTrace("ERROR: BinaryWriter failed (%08X) to load '%ls'\n", hr, fileName);
+        DebugTrace(L"ERROR: BinaryWriter failed (%08X) to load '%ls'\n", hr, fileName);
         throw std::exception("BinaryWriter");
     }
 

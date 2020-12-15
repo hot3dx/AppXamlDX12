@@ -15,7 +15,7 @@
 
 #pragma once
 
-#include "..\Common\d3dx12.h"
+#include "Common\d3dx12.h"
 #include <d3d12.h>
 
 namespace DXUT
@@ -63,7 +63,7 @@ namespace DXUT
         D3DDECLUSAGE_TEXCOORD = 5,
         D3DDECLUSAGE_TANGENT = 6,
         D3DDECLUSAGE_BINORMAL = 7,
-        D3DDECLUSAGE_COLOR = 10,
+        D3DDECLUSAGE_COLOR = 10
     };
 
     enum D3DDECLTYPE
@@ -87,7 +87,7 @@ namespace DXUT
         // These are extensions for DXGI-based versions of Direct3D
         D3DDECLTYPE_DXGI_R10G10B10A2_UNORM = 32 + DXGI_FORMAT_R10G10B10A2_UNORM,
         D3DDECLTYPE_DXGI_R11G11B10_FLOAT   = 32 + DXGI_FORMAT_R11G11B10_FLOAT,
-        D3DDECLTYPE_DXGI_R8G8B8A8_SNORM    = 32 + DXGI_FORMAT_R8G8B8A8_SNORM,
+        D3DDECLTYPE_DXGI_R8G8B8A8_SNORM    = 32 + DXGI_FORMAT_R8G8B8A8_SNORM
     };
 
     #pragma pack(push,4)
@@ -141,19 +141,19 @@ namespace DXUT
         PT_LINE_LIST_ADJ,
         PT_LINE_STRIP_ADJ,
         PT_QUAD_PATCH_LIST,
-        PT_TRIANGLE_PATCH_LIST,
+        PT_TRIANGLE_PATCH_LIST
     };
 
     enum SDKMESH_INDEX_TYPE
     {
         IT_16BIT = 0,
-        IT_32BIT,
+        IT_32BIT
     };
 
     enum FRAME_TRANSFORM_TYPE
     {
         FTT_RELATIVE = 0,
-        FTT_ABSOLUTE,		//This is not currently used but is here to support absolute transformations in the future
+        FTT_ABSOLUTE		//This is not currently used but is here to support absolute transformations in the future
     };
 
     //--------------------------------------------------------------------------------------

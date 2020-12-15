@@ -12,7 +12,7 @@
 
 #pragma warning(disable : 4324)
 
-#include "..\Common\d3dx12.h"
+#include "Common\d3dx12.h"
 #include <d3d12.h>
 #include <exception>
 #include <memory>
@@ -36,7 +36,7 @@ namespace DirectX
         virtual const char* what() const override
         {
             static char s_str[64] = {};
-            sprintf_s(s_str, "Failure with HRESULT of %08X", static_cast<unsigned int>(result));
+            StringCbPrintf((STRSAFE_LPWSTR)s_str, 64, L"Failure with HRESULT of %08X", static_cast<unsigned int>(result));
             return s_str;
         }
 
@@ -55,15 +55,15 @@ namespace DirectX
 
 
     // Helper for output debug tracing
-    inline void DebugTrace(_In_z_ _Printf_format_string_ const char* format, ...) noexcept
+    inline void DebugTrace(_In_z_ _Printf_format_string_ const wchar_t* format, ...) noexcept
     {
-    #ifdef _DEBUG
+#ifdef _DEBUG
         va_list args;
         va_start(args, format);
 
-        char buff[1024] = {};
-        vsprintf_s(buff, format, args);
-        OutputDebugStringA(buff);
+        wchar_t buff[1024] = {};
+        StringCbPrintf(buff, 1024, format, args);
+        OutputDebugStringA((LPCSTR)buff);
         va_end(args);
     #else
         UNREFERENCED_PARAMETER(format);

@@ -114,7 +114,7 @@ SpriteFont::Impl::Impl(
     {
         if (reader->Read<uint8_t>() != *magic)
         {
-            DebugTrace("ERROR: SpriteFont provided with an invalid .spritefont file\n");
+            DebugTrace(L"ERROR: SpriteFont provided with an invalid .spritefont file\n");
             throw std::exception("Not a MakeSpriteFont output binary");
         }
     }
@@ -194,7 +194,7 @@ SpriteFont::Glyph const* SpriteFont::Impl::FindGlyph(wchar_t character) const
         return defaultGlyph;
     }
 
-    DebugTrace("ERROR: SpriteFont encountered a character not in the font (%u, %C), and no default glyph was provided\n", character, character);
+    DebugTrace(L"ERROR: SpriteFont encountered a character not in the font (%u, %C), and no default glyph was provided\n", character, character);
     throw std::exception("Character not in font");
 }
 
@@ -331,7 +331,7 @@ const wchar_t* SpriteFont::Impl::ConvertUTF8(_In_z_ const char *text)
 
     if (!result)
     {
-        DebugTrace("ERROR: MultiByteToWideChar failed with error %u.\n", GetLastError());
+        DebugTrace(L"ERROR: MultiByteToWideChar failed with error %u.\n", GetLastError());
         throw std::exception("MultiByteToWideChar");
     }
 
@@ -418,7 +418,7 @@ void XM_CALLCONV SpriteFont::DrawString(_In_ SpriteBatch* spriteBatch, _In_z_ wc
         { { { -1, -1, 0, 0 } } },
         { { {  1, -1, 0, 0 } } },
         { { { -1,  1, 0, 0 } } },
-        { { {  1,  1, 0, 0 } } },
+        { { {  1,  1, 0, 0 } } }
     };
 
     // Lookup table indicates which axes are mirrored for each SpriteEffects enum value.
@@ -427,7 +427,7 @@ void XM_CALLCONV SpriteFont::DrawString(_In_ SpriteBatch* spriteBatch, _In_z_ wc
         { { { 0, 0, 0, 0 } } },
         { { { 1, 0, 0, 0 } } },
         { { { 0, 1, 0, 0 } } },
-        { { { 1, 1, 0, 0 } } },
+        { { { 1, 1, 0, 0 } } }
     };
 
     XMVECTOR baseOffset = origin;

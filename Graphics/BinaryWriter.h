@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include "..\Common\d3dx12.h"
+#include "Common\d3dx12.h"
 #include <memory>
 #include <exception>
 #include <stdexcept>

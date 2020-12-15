@@ -77,12 +77,12 @@ void DirectX::CreateShaderResourceView(
         break;
 
     case D3D12_RESOURCE_DIMENSION_BUFFER:
-        DebugTrace("ERROR: CreateShaderResourceView cannot be used with DIMENSION_BUFFER.\n");
+        DebugTrace(L"ERROR: CreateShaderResourceView cannot be used with DIMENSION_BUFFER.\n");
         throw std::exception("buffer resources not supported");
 
     case D3D12_RESOURCE_DIMENSION_UNKNOWN:
     default:
-        DebugTrace("ERROR: CreateShaderResourceView cannot be used with DIMENSION_UNKNOWN (%d).\n", desc.Dimension);
+        DebugTrace(L"ERROR: CreateShaderResourceView cannot be used with DIMENSION_UNKNOWN (%d).\n", desc.Dimension);
         throw std::exception("unknown resource dimension");
     }
 

@@ -53,7 +53,7 @@ namespace AppXamlDX12
 		int RotateMeshOnAnyAxisCV(float ox, float oy, float oz, CUSTOMVERTEX* v, VOID* pV, int Count, float a, float b, float c);
 		void   CalculateSphere(int* count);
 		CUSTOMVERTEX* CalculateSphereCV(CUSTOMVERTEX* v, int* n, DWORD dwcolor);
-		VertexPositionColor* CalculateSphereVPC(VertexPositionColor* v, int* n, DWORD dwcolor);
+		DirectX::VertexPositionColor* CalculateSphereVPC(DirectX::VertexPositionColor* v, int* n, DWORD dwcolor);
 		void   MoveRotateCameraXY(int direction);
 		void   MoveRotateCameraAny(float x, float y, float z);
 

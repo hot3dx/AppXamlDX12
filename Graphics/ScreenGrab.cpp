@@ -50,13 +50,13 @@ namespace
 
         if (desc.Dimension != D3D12_RESOURCE_DIMENSION_TEXTURE2D)
         {
-            DebugTrace("ERROR: ScreenGrab does not support 1D or volume textures. Consider using DirectXTex instead.\n");
+            DebugTrace(L"ERROR: ScreenGrab does not support 1D or volume textures. Consider using DirectXTex instead.\n");
             return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
         }
 
         if (desc.DepthOrArraySize > 1 || desc.MipLevels > 1)
         {
-            DebugTrace("WARNING: ScreenGrab does not support 2D arrays, cubemaps, or mipmaps; only the first surface is written. Consider using DirectXTex instead.\n");
+            DebugTrace(L"WARNING: ScreenGrab does not support 2D arrays, cubemaps, or mipmaps; only the first surface is written. Consider using DirectXTex instead.\n");
         }
 
         if (srcPitch > UINT32_MAX)
@@ -340,7 +340,7 @@ HRESULT DirectX::SaveDDSTextureToFile(
         case DXGI_FORMAT_IA44:
         case DXGI_FORMAT_P8:
         case DXGI_FORMAT_A8P8:
-            DebugTrace("ERROR: ScreenGrab does not support video textures. Consider using DirectXTex.\n");
+            DebugTrace(L"ERROR: ScreenGrab does not support video textures. Consider using DirectXTex.\n");
             return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
 
         default:
@@ -537,7 +537,7 @@ HRESULT DirectX::SaveWICTextureToFile(
             break;
 
         default:
-            DebugTrace("ERROR: ScreenGrab does not support all DXGI formats (%u). Consider using DirectXTex.\n", static_cast<uint32_t>(desc.Format));
+            DebugTrace(L"ERROR: ScreenGrab does not support all DXGI formats (%u). Consider using DirectXTex.\n", static_cast<uint32_t>(desc.Format));
             return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
     }
 

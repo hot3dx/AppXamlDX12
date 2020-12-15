@@ -320,13 +320,13 @@ namespace
             case DXGI_FORMAT_IA44:
             case DXGI_FORMAT_P8:
             case DXGI_FORMAT_A8P8:
-                DebugTrace("ERROR: DDSTextureLoader does not support video textures. Consider using DirectXTex instead.\n");
+                DebugTrace(L"ERROR: DDSTextureLoader does not support video textures. Consider using DirectXTex instead.\n");
                 return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
 
             default:
                 if (BitsPerPixel(d3d10ext->dxgiFormat) == 0)
                 {
-                    DebugTrace("ERROR: Unknown DXGI format (%u)\n", static_cast<uint32_t>(d3d10ext->dxgiFormat));
+                    DebugTrace(L"ERROR: Unknown DXGI format (%u)\n", static_cast<uint32_t>(d3d10ext->dxgiFormat));
                     return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
                 }
                 break;
@@ -362,18 +362,18 @@ namespace
 
                 if (arraySize > 1)
                 {
-                    DebugTrace("ERROR: Volume textures are not texture arrays\n");
+                    DebugTrace(L"ERROR: Volume textures are not texture arrays\n");
                     return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
                 }
                 break;
 
             case D3D12_RESOURCE_DIMENSION_BUFFER:
-                DebugTrace("ERROR: Resource dimension buffer type not supported for textures\n");
+                DebugTrace(L"ERROR: Resource dimension buffer type not supported for textures\n");
                 return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
 
             case D3D12_RESOURCE_DIMENSION_UNKNOWN:
             default:
-                DebugTrace("ERROR: Unknown resource dimension (%u)\n", static_cast<uint32_t>(d3d10ext->resourceDimension));
+                DebugTrace(L"ERROR: Unknown resource dimension (%u)\n", static_cast<uint32_t>(d3d10ext->resourceDimension));
                 return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
             }
 
@@ -385,7 +385,7 @@ namespace
 
             if (format == DXGI_FORMAT_UNKNOWN)
             {
-                DebugTrace("ERROR: DDSTextureLoader does not support all legacy DDS formats. Consider using DirectXTex.\n");
+                DebugTrace(L"ERROR: DDSTextureLoader does not support all legacy DDS formats. Consider using DirectXTex.\n");
                 return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
             }
 
@@ -400,7 +400,7 @@ namespace
                     // We require all six faces to be defined
                     if ((header->caps2 & DDS_CUBEMAP_ALLFACES) != DDS_CUBEMAP_ALLFACES)
                     {
-                        DebugTrace("ERROR: DirectX 12 does not support partial cubemaps\n");
+                        DebugTrace(L"ERROR: DirectX 12 does not support partial cubemaps\n");
                         return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
                     }
 
@@ -420,7 +420,7 @@ namespace
         // Bound sizes (for security purposes we don't trust DDS file metadata larger than the Direct3D hardware requirements)
         if (mipCount > D3D12_REQ_MIP_LEVELS)
         {
-            DebugTrace("ERROR: Too many mipmap levels defined for DirectX 12 (%zu).\n", mipCount);
+            DebugTrace(L"ERROR: Too many mipmap levels defined for DirectX 12 (%zu).\n", mipCount);
             return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
         }
 
@@ -430,7 +430,7 @@ namespace
             if ((arraySize > D3D12_REQ_TEXTURE1D_ARRAY_AXIS_DIMENSION) ||
                 (width > D3D12_REQ_TEXTURE1D_U_DIMENSION))
             {
-                DebugTrace("ERROR: Resource dimensions too large for DirectX 12 (1D: array %u, size %u)\n", arraySize, width);
+                DebugTrace(L"ERROR: Resource dimensions too large for DirectX 12 (1D: array %u, size %u)\n", arraySize, width);
                 return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
             }
             break;
@@ -443,7 +443,7 @@ namespace
                     (width > D3D12_REQ_TEXTURECUBE_DIMENSION) ||
                     (height > D3D12_REQ_TEXTURECUBE_DIMENSION))
                 {
-                    DebugTrace("ERROR: Resource dimensions too large for DirectX 12 (2D cubemap: array %u, size %u by %u)\n", arraySize, width, height);
+                    DebugTrace(L"ERROR: Resource dimensions too large for DirectX 12 (2D cubemap: array %u, size %u by %u)\n", arraySize, width, height);
                     return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
                 }
             }
@@ -451,7 +451,7 @@ namespace
                 (width > D3D12_REQ_TEXTURE2D_U_OR_V_DIMENSION) ||
                 (height > D3D12_REQ_TEXTURE2D_U_OR_V_DIMENSION))
             {
-                DebugTrace("ERROR: Resource dimensions too large for DirectX 12 (2D: array %u, size %u by %u)\n", arraySize, width, height);
+                DebugTrace(L"ERROR: Resource dimensions too large for DirectX 12 (2D: array %u, size %u by %u)\n", arraySize, width, height);
                 return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
             }
             break;
@@ -462,17 +462,17 @@ namespace
                 (height > D3D12_REQ_TEXTURE3D_U_V_OR_W_DIMENSION) ||
                 (depth > D3D12_REQ_TEXTURE3D_U_V_OR_W_DIMENSION))
             {
-                DebugTrace("ERROR: Resource dimensions too large for DirectX 12 (3D: array %u, size %u by %u by %u)\n", arraySize, width, height, depth);
+                DebugTrace(L"ERROR: Resource dimensions too large for DirectX 12 (3D: array %u, size %u by %u by %u)\n", arraySize, width, height, depth);
                 return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
             }
             break;
 
         case D3D12_RESOURCE_DIMENSION_BUFFER:
-            DebugTrace("ERROR: Resource dimension buffer type not supported for textures\n");
+            DebugTrace(L"ERROR: Resource dimension buffer type not supported for textures\n");
             return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
 
         default:
-            DebugTrace("ERROR: Unknown resource dimension (%u)\n", static_cast<uint32_t>(resDim));
+            DebugTrace(L"ERROR: Unknown resource dimension (%u)\n", static_cast<uint32_t>(resDim));
             return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
         }
 
@@ -850,7 +850,7 @@ HRESULT DirectX::CreateDDSTextureFromMemoryEx(
         DXGI_FORMAT fmt = GetPixelFormat(header);
         if (!resourceUpload.IsSupportedForGenerateMips(fmt))
         {
-            DebugTrace("WARNING: This device does not support autogen mips for this format (%d)\n", static_cast<int>(fmt));
+            DebugTrace(L"WARNING: This device does not support autogen mips for this format (%d)\n", static_cast<int>(fmt));
             loadFlags &= ~DDS_LOADER_MIP_AUTOGEN;
         }
     }
@@ -968,7 +968,7 @@ HRESULT DirectX::CreateDDSTextureFromFileEx(
         DXGI_FORMAT fmt = GetPixelFormat(header);
         if (!resourceUpload.IsSupportedForGenerateMips(fmt))
         {
-            DebugTrace("WARNING: This device does not support autogen mips for this format (%d)\n", static_cast<int>(fmt));
+            DebugTrace(L"WARNING: This device does not support autogen mips for this format (%d)\n", static_cast<int>(fmt));
             loadFlags &= ~DDS_LOADER_MIP_AUTOGEN;
         }
     }

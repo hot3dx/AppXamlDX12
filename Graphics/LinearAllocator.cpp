@@ -81,7 +81,7 @@ LinearAllocator::LinearAllocator(
     {
         if (GetNewPage() == nullptr)
         {
-            DebugTrace("LinearAllocator failed to preallocate pages (%zu required bytes, %zu pages)\n",
+            DebugTrace(L"LinearAllocator failed to preallocate pages (%zu required bytes, %zu pages)\n",
                 preallocatePageCount * m_increment, preallocatePageCount);
             throw std::bad_alloc();
         }
@@ -291,7 +291,7 @@ LinearAllocatorPage* LinearAllocator::GetNewPage()
     {
         if (hr != E_OUTOFMEMORY)
         {
-            DebugTrace("LinearAllocator::GetNewPage resource allocation failed due to unexpected error %08X\n", hr);
+            DebugTrace(L"LinearAllocator::GetNewPage resource allocation failed due to unexpected error %08X\n", hr);
         }
         return nullptr;
     }
@@ -313,7 +313,7 @@ LinearAllocatorPage* LinearAllocator::GetNewPage()
         IID_GRAPHICS_PPV_ARGS(spFence.ReleaseAndGetAddressOf()));
     if (FAILED(hr))
     {
-        DebugTrace("LinearAllocator::GetNewPage failed to allocate fence with error %08X\n", hr);
+        DebugTrace(L"LinearAllocator::GetNewPage failed to allocate fence with error %08X\n", hr);
         return nullptr;
     }
 

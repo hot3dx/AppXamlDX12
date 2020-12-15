@@ -83,7 +83,7 @@ void DirectX::ComputeBox(VertexCollection& vertices, IndexCollection& indices, c
         { { {  1,  0,  0, 0 } } },
         { { { -1,  0,  0, 0 } } },
         { { {  0,  1,  0, 0 } } },
-        { { {  0, -1,  0, 0 } } },
+        { { {  0, -1,  0, 0 } } }
     };
 
     static const XMVECTORF32 textureCoordinates[4] =
@@ -91,7 +91,7 @@ void DirectX::ComputeBox(VertexCollection& vertices, IndexCollection& indices, c
         { { { 1, 0, 0, 0 } } },
         { { { 1, 1, 0, 0 } } },
         { { { 0, 1, 0, 0 } } },
-        { { { 0, 0, 0, 0 } } },
+        { { { 0, 0, 0, 0 } } }
     };
 
     XMVECTOR tsize = XMLoadFloat3(&size);
@@ -249,7 +249,7 @@ void DirectX::ComputeGeoSphere(VertexCollection& vertices, IndexCollection& indi
         XMFLOAT3(1,  0,  0), // 2 right
         XMFLOAT3(0,  0,  1), // 3 back
         XMFLOAT3(-1,  0,  0), // 4 left
-        XMFLOAT3(0, -1,  0), // 5 bottom
+        XMFLOAT3(0, -1,  0) // 5 bottom
     };
     static const uint16_t OctahedronIndices[] =
     {
@@ -260,7 +260,7 @@ void DirectX::ComputeGeoSphere(VertexCollection& vertices, IndexCollection& indi
         5, 1, 4, // bottom front-left face
         5, 4, 3, // bottom back-left face
         5, 3, 2, // bottom back-right face
-        5, 2, 1, // bottom front-right face
+        5, 2, 1  // bottom front-right face
     };
 
     const float radius = diameter / 2.0f;
@@ -360,7 +360,7 @@ void DirectX::ComputeGeoSphere(VertexCollection& vertices, IndexCollection& indi
                  iv0, iv01, iv20, // a
                 iv20, iv12,  iv2, // b
                 iv20, iv01, iv12, // c
-                iv01,  iv1, iv12, // d
+                iv01,  iv1, iv12  // d
             };
             newIndices.insert(newIndices.end(), std::begin(indicesToAdd), std::end(indicesToAdd));
         }
@@ -796,7 +796,7 @@ void DirectX::ComputeTetrahedron(VertexCollection& vertices, IndexCollection& in
         0, 1, 2,
         0, 2, 3,
         0, 3, 1,
-        1, 3, 2,
+        1, 3, 2
     };
 
     for (size_t j = 0; j < _countof(faces); j += 3)
@@ -950,7 +950,7 @@ void DirectX::ComputeDodecahedron(VertexCollection& vertices, IndexCollection& i
         16, 4, 14, 6, 17,
         6, 11, 10, 2, 17,
         7, 15, 5, 18, 19,
-        7, 19, 3, 10, 11,
+        7, 19, 3, 10, 11
     };
 
     static const XMVECTORF32 textureCoordinates[5] =
@@ -975,7 +975,7 @@ void DirectX::ComputeDodecahedron(VertexCollection& vertices, IndexCollection& i
         { 4, 0, 1, 2, 3 },
         { 1, 2, 3, 4, 0 },
         { 0, 1, 2, 3, 4 },
-        { 2, 3, 4, 0, 1 },
+        { 2, 3, 4, 0, 1 }
     };
 
     size_t t = 0;
@@ -1126,7 +1126,7 @@ void DirectX::ComputeIcosahedron(VertexCollection& vertices, IndexCollection& in
 // Include the teapot control point data.
 namespace
 {
-#include "..\Graphics\TeapotData.inc"
+#include "Graphics\TeapotData.inc"
 
     // Tessellates the specified bezier patch.
     void XM_CALLCONV TessellatePatch(VertexCollection& vertices, IndexCollection& indices, TeapotPatch const& patch, size_t tessellation, FXMVECTOR scale, bool isMirrored)
