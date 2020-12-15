@@ -2,6 +2,7 @@
 
 #include "pch.h"
 #include <ppltasks.h>	// For create_task
+#include <strsafe.h>
 
 namespace DX
 {

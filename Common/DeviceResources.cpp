@@ -232,16 +232,19 @@ void DX::DeviceResources::CreateDeviceResources()
 
 	ComPtr<IDXGIAdapter1> adapter;
 	GetHardwareAdapter(&adapter);
-
-	// Create the Direct3D 12 API device object
-	hr = D3D12CreateDevice(
-		adapter.Get(),					// The hardware adapter.
-		D3D_FEATURE_LEVEL_11_0,			// Minimum feature level this app can support.
-		IID_PPV_ARGS(&m_d3dDevice)		// Returns the Direct3D device created.
+	if (adapter)
+	{
+		// Create the Direct3D 12 API device object
+		hr = D3D12CreateDevice(
+			adapter.Get(),					// The hardware adapter.
+			D3D_FEATURE_LEVEL_11_0,			// Minimum feature level this app can support.
+			IID_PPV_ARGS(&m_d3dDevice)		// Returns the Direct3D device created.
 		);
+	}
 
 	//#if defined(_DEBUG)
-	if (FAILED(hr))
+	//if (FAILED(hr))
+	else
 	{
 		// If the initialization fails, fall back to the WARP device.
 		// For more information on WARP, see: 
