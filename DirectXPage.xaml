@@ -27,7 +27,7 @@
 
             </StackPanel>
             <StackPanel HorizontalAlignment="Right" Height="383" Margin="0,-383,0,0" VerticalAlignment="Top" Width="133" RequestedTheme="Light" Background="#FFCD33E4">
-                <Button x:Name="IDC_SET_COLORS_BUTTON" Content="1) Set Colors" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,10,0,0" RenderTransformOrigin="0.906,1.984" Height="52" Width="110" BorderBrush="#FFE4144D"/>
+                <Button x:Name="IDC_SET_COLORS_BUTTON" Content="1) Set Colors" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,10,0,0" RenderTransformOrigin="0.906,1.984" Height="52" Width="110" BorderBrush="#FFE4144D" Click="IDC_SET_COLORS_BUTTON_Click_1"/>
                 <TextBlock x:Name="IDC_FACES_STATIC"  Text="2) Faces" HorizontalAlignment="Center" VerticalAlignment="Top" Width="67" TextDecorations="Underline" FocusVisualPrimaryBrush="#FF159B15"/>
                 <CheckBox x:Name="IDC_EXTERIOR_FACES_CHECKBOX" Content="Exterior" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="1.91,0.484" Width="110" Margin="0,0,0,0" Background="#FF159B15"/>
                 <CheckBox x:Name="IDC_INTERIOR_FACES_CHECKBOX" Content="Interior" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="7,0,0,0" RenderTransformOrigin="1.91,0.484" Width="110" Background="#FF159B15"/>

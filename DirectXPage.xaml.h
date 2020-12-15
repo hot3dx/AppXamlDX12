@@ -116,6 +116,7 @@ namespace AppXamlDX12
 		float m_camerarotation;
 		float m_anglerotation;
 		int m_iCount;
+		void IDC_SET_COLORS_BUTTON_Click_1(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 	};
 }
 

@@ -71,30 +71,30 @@ AppXamlDX12::DirectXPage::DirectXPage():
 	m_deviceResources = std::make_shared<DX::DeviceResources>();
 	m_deviceResources->SetSwapChainPanel(swapChainPanel);
 
-	AppXamlDX12::DirectXPage^ huh = this;
+	
 	// Register our SwapChainPanel to get independent input pointer events
-	auto workItemHandler = ref new WorkItemHandler([huh] (IAsyncAction^)
+	auto workItemHandler = ref new WorkItemHandler([this] (IAsyncAction^)
 	{
 		// The CoreIndependentInputSource will raise pointer events for the specified device types on whichever thread it's created on.
-		huh->m_coreInput = huh->swapChainPanel->CreateCoreIndependentInputSource(
+		m_coreInput = swapChainPanel->CreateCoreIndependentInputSource(
 			Windows::UI::Core::CoreInputDeviceTypes::Mouse |
 			Windows::UI::Core::CoreInputDeviceTypes::Touch |
 			Windows::UI::Core::CoreInputDeviceTypes::Pen
 			);
 
 		// Register for pointer events, which will be raised on the background thread.
-		huh->m_coreInput->PointerPressed += ref new TypedEventHandler<Object^, PointerEventArgs^>(huh, &DirectXPage::OnPointerPressed);
-		huh->m_coreInput->PointerMoved += ref new TypedEventHandler<Object^, PointerEventArgs^>(huh, &DirectXPage::OnPointerMoved);
-		huh->m_coreInput->PointerReleased += ref new TypedEventHandler<Object^, PointerEventArgs^>(huh, &DirectXPage::OnPointerReleased);
-		huh->m_coreInput->PointerWheelChanged += ref new TypedEventHandler<Object^, PointerEventArgs^>(huh, &DirectXPage::OnPointerWheelChanged);
-		huh->m_coreInput->PointerEntered += ref new TypedEventHandler<Object^, PointerEventArgs^>(huh, &DirectXPage::OnPointerEntered);
-		huh->m_coreInput->PointerExited += ref new TypedEventHandler<Object^, PointerEventArgs^>(huh, &DirectXPage::OnPointerExited);
-		huh->m_coreInput->PointerCaptureLost += ref new TypedEventHandler<Object^, PointerEventArgs^>(huh, &DirectXPage::OnPointerCaptureLost);
+		m_coreInput->PointerPressed += ref new TypedEventHandler<Object^, PointerEventArgs^>(this, &DirectXPage::OnPointerPressed);
+		m_coreInput->PointerMoved += ref new TypedEventHandler<Object^, PointerEventArgs^>(this, &DirectXPage::OnPointerMoved);
+		m_coreInput->PointerReleased += ref new TypedEventHandler<Object^, PointerEventArgs^>(this, &DirectXPage::OnPointerReleased);
+		m_coreInput->PointerWheelChanged += ref new TypedEventHandler<Object^, PointerEventArgs^>(this, &DirectXPage::OnPointerWheelChanged);
+		m_coreInput->PointerEntered += ref new TypedEventHandler<Object^, PointerEventArgs^>(this, &DirectXPage::OnPointerEntered);
+		m_coreInput->PointerExited += ref new TypedEventHandler<Object^, PointerEventArgs^>(this, &DirectXPage::OnPointerExited);
+		m_coreInput->PointerCaptureLost += ref new TypedEventHandler<Object^, PointerEventArgs^>(this, &DirectXPage::OnPointerCaptureLost);
 		
 		// Begin processing input messages as they're delivered.
-		huh->m_coreInput->Dispatcher->ProcessEvents(CoreProcessEventsOption::ProcessUntilQuit);
+		m_coreInput->Dispatcher->ProcessEvents(CoreProcessEventsOption::ProcessUntilQuit);
 	});
-	huh = nullptr;
+	
 	// Run task on a dedicated high priority background thread.
 	m_inputLoopWorker = ThreadPool::RunAsync(workItemHandler, WorkItemPriority::High, WorkItemOptions::TimeSliced);
 
@@ -143,10 +143,12 @@ void DirectXPage::OnVisibilityChanged(CoreWindow^ sender, VisibilityChangedEvent
 	m_windowVisible = args->Visible;
 	if (m_windowVisible)
 	{
+		m_deviceResources->m_isSwapPanelVisible = true;
 		m_main->StartRenderLoop();
 	}
 	else
 	{
+		m_deviceResources->m_isSwapPanelVisible = false;
 		m_main->StopRenderLoop();
 	}
 }
@@ -257,7 +259,7 @@ void AppXamlDX12::DirectXPage::cancelColor_Click(Platform::Object^ sender, Windo
 
 void AppXamlDX12::DirectXPage::IDC_CLEAR_BUTTON_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
-	m_deviceResources->m_isSwapPanelVisible = true;
+	
 	
 
 }
@@ -331,9 +333,9 @@ void AppXamlDX12::DirectXPage::IDC_ROTO_HELP_BUTTON_Click(Platform::Object^ send
 
 void DirectXPage::OnPointerPressed(Object^ sender, PointerEventArgs^ e)
 {
-	if (e->CurrentPoint->Properties->IsLeftButtonPressed) { m_main->GetSceneRenderer()->m_bLButtonDown = true; }
-	if (e->CurrentPoint->Properties->IsMiddleButtonPressed) {}
-	if (e->CurrentPoint->Properties->IsRightButtonPressed) { m_main->GetSceneRenderer()->m_bRButtonDown = true; }
+	if (e->CurrentPoint->Properties->IsLeftButtonPressed) { m_main->GetSceneRenderer()->Setm_bLButtonDown(true); }
+	if (e->CurrentPoint->Properties->IsMiddleButtonPressed) { m_main->GetSceneRenderer()->Setm_bMButtonDown(true); }
+	if (e->CurrentPoint->Properties->IsRightButtonPressed) { m_main->GetSceneRenderer()->Setm_bRButtonDown(true); }
 	// When the pointer is pressed begin tracking the pointer movement.
 	m_main->StartTracking();
 }
@@ -353,9 +355,9 @@ void DirectXPage::OnPointerMoved(Object^ sender, PointerEventArgs^ e)
 void DirectXPage::OnPointerReleased(Object^ sender, PointerEventArgs^ e)
 {
 	// Stop tracking pointer movement when the pointer is released.
-	if (!e->CurrentPoint->Properties->IsLeftButtonPressed) { m_main->GetSceneRenderer()->m_bLButtonDown = false; }
-	if (!e->CurrentPoint->Properties->IsMiddleButtonPressed) {}
-	if (!e->CurrentPoint->Properties->IsRightButtonPressed) { m_main->GetSceneRenderer()->m_bRButtonDown = false; }
+	if (!e->CurrentPoint->Properties->IsLeftButtonPressed) { m_main->GetSceneRenderer()->Setm_bLButtonDown(false); }
+	if (!e->CurrentPoint->Properties->IsMiddleButtonPressed) { m_main->GetSceneRenderer()->Setm_bMButtonDown(false); }
+	if (!e->CurrentPoint->Properties->IsRightButtonPressed) { m_main->GetSceneRenderer()->Setm_bRButtonDown(false); }
 
 	m_main->StopTracking();
 }
@@ -388,95 +390,100 @@ void AppXamlDX12::DirectXPage::OnKeyDown(Windows::UI::Core::CoreWindow^ /*window
 	{
 	case VirtualKey::F4:
 	{
-		//m_windowClosed = true;
-		OutputDebugString(L"F4 Pressed\n");
+		//m_windowClosed(true)
+		// OutputDebugString(L"F4 Pressed\n");
 	}break;
 	case VirtualKey::F5:
 	{
-		//m_windowClosed = true;
-		OutputDebugString(L"F5 Pressed\n");
+		//m_windowClosed(true)
+		// OutputDebugString(L"F5 Pressed\n");
 	}
 	case VirtualKey::P:       // Pause
 	{
-		OutputDebugString(L"Pause\n");
-		//m_pauseKeyActive = true;
+		// OutputDebugString(L"Pause\n");
+		//m_pauseKeyActive(true)
 	}break;
 	case VirtualKey::Home:
 	{
-		OutputDebugString(L"Home\n");
-		//m_homeKeyActive = true;
+		// OutputDebugString(L"Home\n");
+		//m_homeKeyActive(true)
 	}break;
 	case VirtualKey::Q:
 	{
-		m_main->GetSceneRenderer()->m_EyeZ += 1.0f;
-		m_main->GetSceneRenderer()->m_LookAtZ += 1.0f;
-		OutputDebugString(L"Q Pressed\n");
+		m_main->GetSceneRenderer()->Setm_EyeZ(1.0f);
+		//m_main->GetSceneRenderer()->Setm_LookAtZ(1.0f);
+		// OutputDebugString(L"Q Pressed\n");
 	}break;
 	case VirtualKey::W:
 	{
-		m_main->GetSceneRenderer()->m_EyeY += 1.0f;
-		m_main->GetSceneRenderer()->m_LookAtY += 1.0f;
-		OutputDebugString(L"W Pressed\n");
+		m_main->GetSceneRenderer()->Setm_EyeY(1.0f);
+		m_main->GetSceneRenderer()->Setm_LookAtY(1.0f);
+		// OutputDebugString(L"W Pressed\n");
 	}break;
 	case VirtualKey::E:
 	{
-		m_main->GetSceneRenderer()->m_EyeZ -= 1.0f;
-		m_main->GetSceneRenderer()->m_LookAtZ -= 1.0f;
-		OutputDebugString(L"E Pressed\n");
+		m_main->GetSceneRenderer()->Setm_EyeZ(-1.0f);
+		//m_main->GetSceneRenderer()->Setm_LookAtZ(-1.0f);
+		// OutputDebugString(L"E Pressed\n");
 	}break;
 	case VirtualKey::A:
 	{
-		m_main->GetSceneRenderer()->m_EyeX += 1.0f;
-		m_main->GetSceneRenderer()->m_LookAtX += 1.0f;
-		OutputDebugString(L"A Pressed\n");
+		m_main->GetSceneRenderer()->Setm_EyeX(1.0f);
+		m_main->GetSceneRenderer()->Setm_LookAtX(1.0f);
+		// OutputDebugString(L"A Pressed\n");
 	}break;
 	case VirtualKey::S:
 	{
-		m_main->GetSceneRenderer()->m_EyeY -= 1.0f;
-		m_main->GetSceneRenderer()->m_LookAtY -= 1.0f;
-		OutputDebugString(L"S Pressed\n");
+		m_main->GetSceneRenderer()->Setm_EyeY(-1.0f);
+		m_main->GetSceneRenderer()->Setm_LookAtY(-1.0f);
+		// OutputDebugString(L"S Pressed\n");
 	}break;
 	case VirtualKey::D:
 	{
-		m_main->GetSceneRenderer()->m_EyeX -= 1.0f;
-		m_main->GetSceneRenderer()->m_LookAtX -= 1.0f;
-		OutputDebugString(L"D Pressed\n");
+		m_main->GetSceneRenderer()->Setm_EyeX(-1.0f);
+		m_main->GetSceneRenderer()->Setm_LookAtX(-1.0f);
+		// OutputDebugString(L"D Pressed\n");
 	}break;
 	case VirtualKey::Z:
 	{
 
-		//m_main->GetSceneRenderer()->m_widthRatio += 0.0001f;
+		//m_main->GetSceneRenderer()->m_widthRatio= -0.0001f;
 
 	}break;
 	case VirtualKey::X:
 	{
-		//m_main->GetSceneRenderer()->m_widthRatio -= 0.0001f;
+		//m_main->GetSceneRenderer()->m_widthRatio=-0.0001f;
 
 
 	}break;
 	case VirtualKey::C:
 	{
-		//m_main->GetSceneRenderer()->m_heightRatio += 0.0001f;
+		//m_main->GetSceneRenderer()->m_heightRatio=-0.0001f;
 
 
 	}break;
 	case VirtualKey::V:
 	{
-		//m_main->GetSceneRenderer()->m_heightRatio -= 0.0001f;
+		//m_main->GetSceneRenderer()->m_heightRatio=-0.0001f;
 
 
 	}break;
 	case VirtualKey::Left:
 	{
+
+		m_main->GetSceneRenderer()->RotateYaw(-1.0f);
 	}break;
 	case VirtualKey::Right:
 	{
+		m_main->GetSceneRenderer()->RotateYaw(1.0f);
 	}break;
 	case VirtualKey::Up:
 	{
+		m_main->GetSceneRenderer()->RotatePitch(1.0f);
 	}break;
 	case VirtualKey::Down:
 	{
+		m_main->GetSceneRenderer()->RotatePitch(-1.0f);
 	}break;
 	}
 }
@@ -600,5 +607,11 @@ void AppXamlDX12::DirectXPage::DrawSphereButton_Click(Platform::Object^ sender, 
 	sphereRenderer->Render();
 	*/
 	//sphereRenderer = nullptr;
+
+}
+
+
+void AppXamlDX12::DirectXPage::IDC_SET_COLORS_BUTTON_Click_1(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+{
 
 }

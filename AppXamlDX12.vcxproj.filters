@@ -23,15 +23,6 @@
     <ClCompile Include="Common\DeviceResources.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClInclude Include="Content\Sample3DSceneRenderer.h">
-      <Filter>Content</Filter>
-    </ClInclude>
-    <ClInclude Include="Content\ShaderStructures.h">
-      <Filter>Content</Filter>
-    </ClInclude>
-    <ClCompile Include="Content\Sample3DSceneRenderer.cpp">
-      <Filter>Content</Filter>
-    </ClCompile>
     <FxCompile Include="Content\SamplePixelShader.hlsl">
       <Filter>Content</Filter>
     </FxCompile>
@@ -219,9 +210,11 @@
     <ClCompile Include="Graphics\Hot3dxGeometry.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\Hot3dx12Rotate.cpp" />
     <ClCompile Include="Input\Hot3dxController.cpp">
       <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Hot3dx12Rotate.cpp">
+      <Filter>Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -368,6 +361,9 @@
     <ClInclude Include="Input\Hot3dxController.h">
       <Filter>Input</Filter>
     </ClInclude>
+    <ClInclude Include="Content\ShaderStructures.h">
+      <Filter>Content</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\StoreLogo.png">
@@ -483,7 +479,6 @@
     <Page Include="DirectXPage.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="ReadMe.md" />
     <None Include="MyTemplate.vstemplate" />
     <None Include="Assets\occcity.bin">
@@ -1368,6 +1363,7 @@
     <None Include="Graphics\Shaders\ToneMap.fx">
       <Filter>Graphics\Shaders</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Content\shader_mesh_alt_pixel.hlsl">

@@ -45,8 +45,8 @@ namespace AppXamlDX12
 
 		// Accessors
 
-		SceneRenderer* GetSceneRenderer(){ return m_sceneRenderer.get();}
-		void SetSceneRenderer() { m_sceneRenderer = std::unique_ptr<SceneRenderer>(new SceneRenderer(m_deviceResources)); }
+		SceneRenderer^ GetSceneRenderer(){ return m_sceneRenderer;}
+		void SetSceneRenderer() { m_sceneRenderer = ref new SceneRenderer(m_deviceResources); }
 		//CD3D12GridXaml* GetCD3D12GridRenderer() { return m_cd3d12GridRenderer.get(); }
 
 		void PauseRequested() {
@@ -60,6 +60,7 @@ namespace AppXamlDX12
 		void KeyDown(Windows::System::VirtualKey key);
 		void KeyUp(Windows::System::VirtualKey key);
 
+		
 	private:
 		// Process all input from the user before updating game state
 		void ProcessInput();
@@ -68,7 +69,7 @@ namespace AppXamlDX12
 		std::shared_ptr<DX::DeviceResources> m_deviceResources;
 
 		// TODO: Replace with your own content renderers.
-		std::unique_ptr<SceneRenderer> m_sceneRenderer;
+		SceneRenderer^ m_sceneRenderer;
 		
 		Windows::Foundation::IAsyncAction^ m_renderLoopWorker;
 		Concurrency::critical_section m_criticalSection;
