@@ -26,11 +26,8 @@ Many if not all DXTK12 Examples can be coded for Xaml, if not all of them.
 
 Donations Appreciated:
 
-BTC 33DN8TgAe879tDkhsCEpneoVrydHbasuLm 
+BTC 32HVJHEXh9bMLVkmoSE1d389q2Q1YvfrNE 
 
-BCHABC qruhxl8y2753fg0qfx7t8zfqzw92rvaxussk7fcnke
-
-LTC MEQVCCxa5ZZkmGqAfYfRvipNcY4BaTRrFm
 
 By:
 ![Ico](https://github.com/hot3dx/AppXamlDX12/blob/master/Assets/AutoDraw2.ico)
